@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true" debug="false">
+
+	<property name="log.base" value="./log"/>
+	<property name="patternSync" value="%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] [%C{32}.java:%L] - %msg%n"/>
+	<property name="patternAsyn" value="%d{yyyy-MM-dd HH:mm:ss.SSS} - %msg%n"/>
+	<Property name="pattern" value="${patternAsyn}"/>
+
+	<appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>${pattern}</pattern>
+			<charset>UTF-8</charset>
+			<outputPatternAsHeader>false</outputPatternAsHeader>
+		</encoder>
+	</appender>
+
+	<appender name="error" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${log.base}/error</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>${log.base}/error.%d{yyyyMMdd}</fileNamePattern>
+			<!-- 可选节点，控制保留的归档文件的最大天数。-->
+<!--			<maxHistory>15</maxHistory>-->
+		</rollingPolicy>
+		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+			<level>error</level>
+		</filter>
+		<encoder>
+			<pattern>${pattern}</pattern>
+			<charset>UTF-8</charset>
+			<outputPatternAsHeader>false</outputPatternAsHeader>
+		</encoder>
+	</appender>
+
+	<appender name="log" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${log.base}/log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>${log.base}/log.%d{yyyyMMddHH}</fileNamePattern>
+			<!-- 可选节点，控制保留的归档文件的最大天数。-->
+<!--			<maxHistory>15</maxHistory>-->
+		</rollingPolicy>
+		<encoder>
+			<pattern>${pattern}</pattern>
+			<charset>UTF-8</charset>
+			<outputPatternAsHeader>false</outputPatternAsHeader>
+		</encoder>
+	</appender>
+	<appender name="dbs" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${log.base}/dbs</file>
+		<!-- 最常用的滚动策略，它根据时间来制定滚动策略，既负责滚动也负责出发滚动-->
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>${log.base}/dbs.%d{yyyyMMddHH}</fileNamePattern>
+			<!-- 可选节点，控制保留的归档文件的最大天数。-->
+		</rollingPolicy>
+		<encoder>
+			<pattern>${pattern}</pattern>
+			<charset>UTF-8</charset>
+			<outputPatternAsHeader>false</outputPatternAsHeader>
+		</encoder>
+		<!-- 匹配>=INFO级别的日志
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>INFO</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        &lt;!&ndash; 对记录事件进行格式化 &ndash;&gt;
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>${pattern}</pattern>
+            <charset>UTF-8</charset>
+            <outputPatternAsHeader>false</outputPatternAsHeader>
+        </encoder>-->
+	</appender>
+
+
+	<appender name="error_async" class="ch.qos.logback.classic.AsyncAppender">
+		<discardingThreshold>0</discardingThreshold><!-- 不丢弃日志，默认80%时会丢弃TRACE,DEBUG,INFO级别日志 -->
+		<queueSize>10240</queueSize><!-- 队列深度，默认256 -->
+		<includeCallerData>false</includeCallerData><!-- 是否包含调用者数据 -->
+		<neverBlock>true</neverBlock><!-- 设置为非阻塞，队列满丢弃 -->
+		<appender-ref ref="error"/>
+	</appender>
+	<appender name="log_async" class="ch.qos.logback.classic.AsyncAppender">
+		<discardingThreshold>80</discardingThreshold>
+		<queueSize>102400</queueSize>
+		<includeCallerData>false</includeCallerData>
+		<neverBlock>true</neverBlock>
+		<appender-ref ref="log"/>
+	</appender>
+	<logger name="com.umpay" level="debug" additivity="false">
+		<appender-ref ref="log_async"/>
+		<appender-ref ref="error_async"/>
+	</logger>
+
+	<appender name="dbs_async" class="ch.qos.logback.classic.AsyncAppender">
+		<discardingThreshold>0</discardingThreshold>
+		<queueSize>102400</queueSize>
+		<includeCallerData>false</includeCallerData>
+		<neverBlock>true</neverBlock>
+		<appender-ref ref="dbs"/>
+	</appender>
+	<logger name="com.umpay.rms.gpd.user.mapper" level="debug">
+		<appender-ref ref="dbs_async"/>
+		<appender-ref ref="error_async"/>
+	</logger>
+
+
+	<logger name="com.umpay" level="debug">
+		<appender-ref ref="stdout"/>
+		<appender-ref ref="log"/>
+		<appender-ref ref="error"/>
+	</logger>
+	<!-- 打印mysql日志  name= 存放mapper的包名; 注意mybatis-plus.configuration.log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
+            如果log-impl: org.apache.ibatis.logging.stdout.StdOutImpl ;则只会打印到控制台;不会存放到文件
+        用来设置某一个包或具体的某一个类的日志打印级别、以及指定<appender>。
+        name: 用来指定受此loger约束的某一个包或者具体的某一个类。
+        level: 如果未设置此属性，那么当前loger将会继承上级的级别。上级是<root>
+        addtivity:是否向上级logger传递打印信息。默认是true
+        -->
+	<!--它是根loger,是所有<loger>的上级。只有一个level属性，因为name已经被命名为"root",且已经是最上级了。 -->
+	<root level="debug">
+		<appender-ref ref="log_async" />
+		<appender-ref ref="error_async" />
+	</root>
+
+</configuration>  

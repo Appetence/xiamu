@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.umpay.rms.gpd.user.mapper.DbPermissionButtonMapper">
+
+    <resultMap type="com.umpay.rms.gpd.user.api.entity.DbPermissionButton" id="DbPermissionButtonResultMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="buttonId" column="button_id" jdbcType="INTEGER"/>
+        <result property="permissionId" column="permission_id" jdbcType="INTEGER"/>
+        <result property="appid" column="appid" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="table_field">
+      id, button_id, permission_id, appid      
+    </sql>
+       
+    <!--通过Id查询单个-->
+    <select id="getById" resultMap="DbPermissionButtonResultMap" parameterType="java.lang.Integer">
+        select
+          <include refid="table_field" />
+        from db_permission_button
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+
+
+    <!--通过实体不为空的属性作为筛选条件查询列表-->
+    <select id="listByEntity" resultMap="DbPermissionButtonResultMap" parameterType="com.umpay.rms.gpd.user.api.entity.DbPermissionButton">
+        select
+          <include refid="table_field" />
+        from db_permission_button
+        <where>
+            <if test="id != null">
+                and id = #{id,jdbcType=INTEGER}
+            </if>
+            <if test="buttonId != null">
+                and button_id = #{buttonId,jdbcType=INTEGER}
+            </if>
+            <if test="permissionId != null">
+                and permission_id = #{permissionId,jdbcType=INTEGER}
+            </if>
+            <if test="appid != null">
+                and appid = #{appid,jdbcType=INTEGER}
+            </if>
+        </where>
+    </select>
+
+    <!--通过实体不为空的属性作为筛选条件查询单个-->
+    <select id="getByEntity" resultMap="DbPermissionButtonResultMap" parameterType="com.umpay.rms.gpd.user.api.entity.DbPermissionButton">
+        select
+          <include refid="table_field" />
+        from db_permission_button
+        <where>
+            <if test="id != null">
+                and id = #{id,jdbcType=INTEGER}
+            </if>
+            <if test="buttonId != null">
+                and button_id = #{buttonId,jdbcType=INTEGER}
+            </if>
+            <if test="permissionId != null">
+                and permission_id = #{permissionId,jdbcType=INTEGER}
+            </if>
+            <if test="appid != null">
+                and appid = #{appid,jdbcType=INTEGER}
+            </if>
+        </where>
+    </select>
+
+    <!--通过Id列表作为筛选条件查询列表，列表长度不为0-->
+    <select id="listByIds" resultMap="DbPermissionButtonResultMap" parameterType="list">
+        select
+          <include refid="table_field" />
+        from db_permission_button
+        where id in
+        <foreach item="item" collection="list" separator="," open="(" close=")" index="index">
+            #{item}
+        </foreach>
+    </select>
+
+    <!--新增实体属性不为null的列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true" parameterType="com.umpay.rms.gpd.user.api.entity.DbPermissionButton">
+        insert into db_permission_button
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+
+          <if test="buttonId != null">
+             button_id,
+          </if>
+          <if test="permissionId != null">
+             permission_id,
+          </if>
+          <if test="appid != null">
+             appid,
+          </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+
+          <if test="buttonId != null">
+             #{buttonId,jdbcType=INTEGER},
+          </if>
+          <if test="permissionId != null">
+             #{permissionId,jdbcType=INTEGER},
+          </if>
+          <if test="appid != null">
+             #{appid,jdbcType=INTEGER},
+          </if>
+        </trim>
+    </insert>
+
+    <!--批量新增所有列，列表长度不能为0，且列表id统一为null或者统一不为null-->
+    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true" parameterType="list">
+        insert into db_permission_button
+         (id, button_id, permission_id, appid)
+        values
+        <foreach item="item" collection="list" separator="," open="" close="" index="index">
+         (#{item.id,jdbcType=INTEGER}, #{item.buttonId,jdbcType=INTEGER}, #{item.permissionId,jdbcType=INTEGER}, #{item.appid,jdbcType=INTEGER})
+        </foreach>
+    </insert>
+
+    <!--通过主键修改实体属性不为null的列-->
+    <update id="update" parameterType="com.umpay.rms.gpd.user.api.entity.DbPermissionButton">
+        update db_permission_button
+        <set>
+            <if test="buttonId != null">
+                button_id = #{buttonId,jdbcType=INTEGER},
+            </if>
+            <if test="permissionId != null">
+                permission_id = #{permissionId,jdbcType=INTEGER},
+            </if>
+            <if test="appid != null">
+                appid = #{appid,jdbcType=INTEGER},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+
+    <!--通过表字段修改实体属性不为null的列-->
+    <update id="updateByField">
+        update db_permission_button
+        <set>
+            <if test="where.buttonId == null and set.buttonId != null">
+                button_id = #{set.buttonId,jdbcType=INTEGER},
+            </if>
+            <if test="where.permissionId == null and set.permissionId != null">
+                permission_id = #{set.permissionId,jdbcType=INTEGER},
+            </if>
+            <if test="where.appid == null and set.appid != null">
+                appid = #{set.appid,jdbcType=INTEGER},
+            </if>
+        </set>
+        <where>
+            <if test="where.id != null">
+                and id = #{where.id,jdbcType=INTEGER}
+            </if>
+            <if test="where.buttonId != null">
+                and button_id = #{where.buttonId,jdbcType=INTEGER}
+            </if>
+            <if test="where.permissionId != null">
+                and permission_id = #{where.permissionId,jdbcType=INTEGER}
+            </if>
+            <if test="where.appid != null">
+                and appid = #{where.appid,jdbcType=INTEGER}
+            </if>
+        </where>
+    </update>
+
+    <!--通过主键修改实体列表，列表长度不能为0，注意：当实体属性为null时，对应的列也会别更新为null-->
+    <update id="updateBatch" parameterType="list">
+        update db_permission_button
+        <trim prefix="set" suffixOverrides=",">
+            <trim prefix="button_id = case" suffix="end,">
+                 <foreach collection="list" item="item" index="index">
+                  when id = #{item.id} then #{item.buttonId}
+                 </foreach>
+            </trim>
+            <trim prefix="permission_id = case" suffix="end,">
+                 <foreach collection="list" item="item" index="index">
+                  when id = #{item.id} then #{item.permissionId}
+                 </foreach>
+            </trim>
+            <trim prefix="appid = case" suffix="end,">
+                 <foreach collection="list" item="item" index="index">
+                  when id = #{item.id} then #{item.appid}
+                 </foreach>
+            </trim>
+        </trim>
+        where id in
+        <foreach collection="list" index="index" item="item" separator="," open="(" close=")">
+            #{item.id,jdbcType=INTEGER}
+        </foreach>
+    </update>
+    
+    <!--通过主键删除-->
+    <delete id="deleteById" parameterType="java.lang.Integer">
+        delete from db_permission_button where id = #{id,jdbcType=INTEGER}
+    </delete>
+
+    <!--通过实体非空属性删除-->
+    <delete id="deleteByEntity" parameterType="com.umpay.rms.gpd.user.api.entity.DbPermissionButton">
+        delete from db_permission_button
+        <where>
+            <if test="buttonId != null">
+                and button_id = #{buttonId,jdbcType=INTEGER}
+            </if>
+            <if test="permissionId != null">
+                and permission_id = #{permissionId,jdbcType=INTEGER}
+            </if>
+            <if test="appid != null">
+                and appid = #{appid,jdbcType=INTEGER}
+            </if>
+        </where>
+    </delete>
+    
+    <!--通过主键列表删除，列表长度不能为0-->
+    <delete id="deleteByIds" parameterType="list">
+        delete from db_permission_button where id in
+        <foreach item="item" collection="list" separator="," open="(" close=")" index="index">
+            #{item}
+        </foreach>
+    </delete>
+    
+    <select id="countAll" resultType="int">
+        select count(id) from db_permission_button
+    </select>
+    
+    <select id="countByEntity" parameterType="com.umpay.rms.gpd.user.api.entity.DbPermissionButton" resultType="int">
+        select count(id) from db_permission_button
+        <where>
+            <if test="id != null">
+                and id = #{id,jdbcType=INTEGER}
+            </if>
+            <if test="buttonId != null">
+                and button_id = #{buttonId,jdbcType=INTEGER}
+            </if>
+            <if test="permissionId != null">
+                and permission_id = #{permissionId,jdbcType=INTEGER}
+            </if>
+            <if test="appid != null">
+                and appid = #{appid,jdbcType=INTEGER}
+            </if>
+        </where>
+    </select>
+</mapper>

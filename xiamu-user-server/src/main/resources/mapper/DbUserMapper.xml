@@ -1,0 +1,328 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.umpay.rms.gpd.user.mapper.DbUserMapper">
+
+    <resultMap type="com.umpay.rms.gpd.user.api.entity.DbUser" id="DbUserMap">
+        <result property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="password" column="password"/>
+        <result property="username" column="username"/>
+        <result property="status" column="status"/>
+        <result property="createTime" column="create_time"/>
+        <result property="salt" column="salt"/>
+        <result property="warning" column="warning"/>
+        <result property="remark" column="remark"/>
+        <result property="accountId" column="account_id"/>
+    </resultMap>
+    <sql id="RsaUserInfo">
+        a.account_id, a.id,a.name, a.username, a.password, a.salt, a.create_time, a.warning,a.remark, a.status,b.company
+    </sql>
+    <select id="selectRsaUserInfo" parameterType="com.umpay.rms.gpd.user.api.entity.DbUser" resultMap="DbUserMap">
+        SELECT <include refid="RsaUserInfo"/>   from db_user a
+        left join tb_account b on a.account_id = b.account_id
+        where a.username = #{username}
+    </select>
+    <!--查询单个-->
+    <select id="queryById" resultMap="DbUserMap">
+        select
+         account_id, id,name, username, password, salt, create_time, warning,remark, status
+        from db_user
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="DbUserMap">
+        select
+           account_id, id,name, username, password, salt, create_time, warning,remark, status
+            from db_user
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="DbUserMap">
+        select
+        account_id, id,name, username, password, salt, create_time, warning,remark, status
+        from db_user
+        <where>
+            <if test="id != null and id != ''">and id =#{id}</if>
+            <if test="name != null and name != ''">and name =#{name}</if>
+            <if test="username != null and username != ''">and username =#{username}</if>
+            <if test="password != null and password != ''">and password = #{password}</if>
+            <if test="salt != null and salt != ''">and salt = #{salt}</if>
+            <if test="createTime != null">and create_time = #{createTime}</if>
+            <if test="legalPerson != null and legalPerson != ''">and legal_person = #{legalPerson}</if>
+            <if test="legalPersonPapers != null and legalPersonPapers != ''">and legal_person_papers =
+                #{legalPersonPapers}
+            </if>
+            <if test="email != null and email != ''">and email = #{email}</if>
+            <if test="businessLicense != null and businessLicense != ''">and business_license = #{businessLicense}</if>
+            <if test="securityCertificate != null and securityCertificate != ''">and security_certificate =
+                #{securityCertificate}
+            </if>
+            <if test="warning != null and warning >0">and warning = #{warning}</if>
+            <if test="contactsName != null and contactsName != ''">and contacts_name = #{contactsName}</if>
+            <if test="contactsAddress != null and contactsAddress != ''">and contacts_address = #{contactsAddress}</if>
+            <if test="contactsQq != null and contactsQq >0">and contacts_qq = #{contactsQq}</if>
+            <if test="contactsWchat != null and contactsWchat != ''">and contacts_wchat = #{contactsWchat}</if>
+            <if test="authenticationStatus != null and authenticationStatus >0">and authentication_status =
+                #{authenticationStatus}
+            </if>
+            <if test="registerTime != null">and register_time = #{registerTime}</if>
+            <if test="status != null and status > 0">and status = #{status}</if>
+            <if test="remark != null and remark != ''">and remark = #{remark }</if>
+            <if test="parentAccountId != null">and parent_account_id= #{parentAccountId }</if>
+            <if test="accountId != null and accountId !=''">and account_id = #{accountId }</if>
+            <if test="companyId != null and companyId >0">and company_id = #{companyId }</if>
+        </where>
+    </select>
+    <select id="selectUserKey" resultMap="DbUserMap">
+        select
+        account_id, id,name, username, password, salt, create_time, warning,remark, status
+        from db_user
+        <where>
+            <if test="id != null and id != ''">and id =#{id}</if>
+            <if test="name != null and name != ''">and name =#{name}</if>
+            <if test="username != null and username != ''">and username =#{username}</if>
+            <if test="password != null and password != ''">and password = #{password}</if>
+            <if test="salt != null and salt != ''">and salt = #{salt}</if>
+            <if test="createTime != null">and create_time = #{createTime}</if>
+            <if test="legalPerson != null and legalPerson != ''">and legal_person = #{legalPerson}</if>
+            <if test="legalPersonPapers != null and legalPersonPapers != ''">and legal_person_papers =
+                #{legalPersonPapers}
+            </if>
+            <if test="email != null and email != ''">and email = #{email}</if>
+            <if test="businessLicense != null and businessLicense != ''">and business_license = #{businessLicense}</if>
+            <if test="securityCertificate != null and securityCertificate != ''">and security_certificate =
+                #{securityCertificate}
+            </if>
+            <if test="warning != null and warning >0">and warning = #{warning}</if>
+            <if test="contactsName != null and contactsName != ''">and contacts_name = #{contactsName}</if>
+            <if test="contactsAddress != null and contactsAddress != ''">and contacts_address = #{contactsAddress}</if>
+            <if test="contactsQq != null and contactsQq >0">and contacts_qq = #{contactsQq}</if>
+            <if test="contactsWchat != null and contactsWchat != ''">and contacts_wchat = #{contactsWchat}</if>
+            <if test="authenticationStatus != null and authenticationStatus >0">and authentication_status =
+                #{authenticationStatus}
+            </if>
+            <if test="registerTime != null">and register_time = #{registerTime}</if>
+            <if test="status != null and status > 0">and status = #{status}</if>
+            <if test="remark != null and remark != ''">and remark = #{remark }</if>
+            <if test="parentAccountId != null">and parent_account_id= #{parentAccountId }</if>
+            <if test="accountId != null and accountId !=''">and account_id = #{accountId }</if>
+            <if test="companyId != null and companyId >0">and company_id = #{companyId }</if>
+        </where>
+    </select>
+    <select id="selectUserByUser" parameterType="com.umpay.rms.gpd.user.api.entity.DbUser"
+            resultMap="DbUserMap">
+        select
+        a.account_id, a.id,a.name, a.username, a.password, a.salt, a.create_time, a.warning, a.remark, a.status, b.company
+        from db_user a left join tb_account b on a.account_id = b.account_id
+        <where>
+            <if test="username != null and username != ''">
+                and a.username = #{username}
+            </if>
+
+        </where>
+    </select>
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        INSERT INTO db_user
+        (
+        <if test="id != null and id != ''">id ,</if>
+        <if test="name != null and name != ''">name ,</if>
+        <if test="username != null and username != ''">username ,</if>
+        <if test="password != null and password != ''">password ,</if>
+        <if test="salt != null and salt != ''">salt,</if>
+        <if test="createTime != null">create_time ,</if>
+        <if test="warning != null and warning >0">warning ,</if>
+        <if test="remark != null and remark != ''">remark ,</if>
+        <if test="accountId != null">account_id ,</if>
+
+        <if test="status != null and status > 0">status</if>
+
+
+        )
+        VALUES
+        (
+        <if test="id != null and id != ''">#{id} ,</if>
+        <if test="name != null and name != ''">#{name} ,</if>
+        <if test="username != null and username != ''">#{username} ,</if>
+        <if test="password != null and password != ''">#{password} ,</if>
+        <if test="salt != null and salt != ''">#{salt},</if>
+        <if test="createTime != null">#{createTime} ,</if>
+        <if test="warning != null and warning >0">#{warning} ,</if>
+        <if test="remark != null and remark != ''">#{remark} ,</if>
+        <if test="accountId != null">#{accountId } ,</if>
+
+        <if test="status != null and status > 0">#{status}</if>
+        )
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update db_user
+        <set>
+            <if test="name != null and name != ''">name =#{name} ,</if>
+
+            <if test="companyId != null and companyId != ''">company_id =#{companyId} ,</if>
+            <if test="username != null and username != ''">username =#{username} ,</if>
+            <if test="password != null and password != ''">password = #{password} ,</if>
+            <if test="salt != null and salt != ''">salt = #{salt},</if>
+            <if test="createTime != null">create_time = #{createTime} ,</if>
+            <if test="legalPerson != null and legalPerson != ''">legal_person = #{legalPerson} ,</if>
+            <if test="legalPersonPapers != null and legalPersonPapers != ''">legal_person_papers = #{legalPersonPapers}
+                ,
+            </if>
+            <if test="email != null and email != ''">email = #{email} ,</if>
+            <if test="businessLicense != null and businessLicense != ''">business_license = #{businessLicense} ,</if>
+            <if test="securityCertificate != null and securityCertificate != ''">security_certificate =
+                #{securityCertificate} ,
+            </if>
+            <if test="warning != null and warning >0">warning = #{warning} ,</if>
+            <if test="contactsName != null and contactsName != ''">contacts_name = #{contactsName},</if>
+            <if test="contactsAddress != null and contactsAddress != ''">contacts_address = #{contactsAddress},</if>
+            <if test="contactsQq != null and contactsQq >0">contacts_qq = #{contactsQq} ,</if>
+            <if test="contactsWchat != null and contactsWchat != ''">contacts_wchat = #{contactsWchat},</if>
+            <if test="authenticationStatus != null and authenticationStatus >0">authentication_status =
+                #{authenticationStatus} ,
+            </if>
+            <if test="registerTime != null">register_time = #{registerTime} ,</if>
+            <if test="status != null and status > 0">status = #{status},</if>
+            <if test="accountId != null">account_id = #{accountId},</if>
+            <if test="parentAccountId != null">parent_account_id = #{parentAccountId},</if>
+            <if test="remark != null and remark != ''">remark = #{remark},</if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from db_user where id = #{id}
+    </delete>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="selectUserManager" resultMap="DbUserMap">
+        select a.account_id
+        , a.company
+        , a.status
+        , a.create_time
+        , a.legal_person_papers
+        , a.legal_person
+        , a.email
+        , a.business_license
+        , a.security_certificate
+        , a.contacts_name
+        , a.contacts_address
+        , a.contacts_qq
+        , a.contacts_wchat
+        , a.authentication_status
+        , a.register_time
+        , a.parent_account_id
+        , a.remark
+        , ta.company as parentCompany
+        ,du.username
+        from tb_account a
+        left join db_user du on a.account_id = du.account_id
+        left join tb_account ta on a.parent_account_id = ta.account_id
+        <where>
+            <if test="company != null and company != ''">and a.company LIKE CONCAT(CONCAT('%', #{name}), '%')</if>
+            <if test="username != null and username != ''">and du.username LIKE CONCAT(CONCAT('%', #{username}), '%')
+            </if>
+            <if test="authenticationStatus != null and authenticationStatus >0">and a.authentication_status =
+                #{authenticationStatus}
+            </if>
+            <if test="accountId != null">and a.account_id LIKE CONCAT(CONCAT('%', #{accountId}), '%')
+            </if>
+            <if test="opentime != null and opentime  != '' and endtime != null and endtime  != ''">and a.create_time
+                BETWEEN #{opentime } AND #{endtime }
+            </if>
+        </where>
+    </select>
+    <resultMap type="com.umpay.rms.gpd.user.api.entity.DbUser" id="DbUserInfoMap">
+        <result property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="password" column="password"/>
+        <result property="username" column="username"/>
+        <result property="status" column="status"/>
+        <result property="createTime" column="create_time"/>
+        <result property="salt" column="salt"/>
+        <result property="warning" column="warning"/>
+        <result property="remark" column="remark"/>
+    </resultMap>
+    <select id="selectUserInfo" resultMap="DbUserInfoMap">
+        /*select a.id
+             , a.name
+             , a.username
+             , a.password
+             , a.salt
+             , a.create_time
+             , a.warning
+             , a.status
+             , a.remark
+             , tacn.code_type
+             , tacn.code_number
+             , tacn.status as tacnstatus
+             , dea.approver_id
+             , dea.create_time
+             , dea.result
+             , dea.content
+             , ta.account_id
+             , ta.company
+             , ta.status as tastatus
+             , ta.create_time
+             , ta.legal_person_papers
+             , ta.legal_person
+             , ta.email
+             , ta.business_license
+             , ta.security_certificate
+             , ta.contacts_name
+             , ta.contacts_address
+             , ta.contacts_qq
+             , ta.contacts_wchat
+             , ta.authentication_status
+             , ta.register_time
+             , ta.parent_account_id
+             , ta.remark
+        from db_user a
+                 left join tb_account ta on a.account_id = ta.account_id
+                 left join tb_account_code_number tacn on a.account_id = tacn.account_id
+                 left join db_examination_approval dea on a.account_id = dea.acc_id
+         where a.username = #{username}
+*/
+
+    </select>
+    <select id="checkUserRole" resultType="com.umpay.rms.gpd.user.api.entity.DbRole">
+
+        select c.id,
+       c.parentId,
+       c. name,
+       c.enname,
+       c.description,
+       c.created,
+       c.updated,
+       c.appid
+from db_user a
+         left join db_user_role b on a.id = b.userId
+         left join db_role c on c.id = b.roleId
+         where a.username = #{username}
+
+    </select>
+    <select id="checkUserRoleByAccountId" resultType="com.umpay.rms.gpd.user.api.entity.DbRole">
+
+SELECT
+	c.id,
+	c.parentId,
+	c.NAME,
+	c.enname,
+	c.description,
+	c.created,
+	c.updated,
+	c.appid
+FROM
+	tb_account d
+	LEFT JOIN db_user a ON a.username = d.mobile
+	LEFT JOIN db_user_role b ON a.id = b.userId
+	LEFT JOIN db_role c ON c.id = b.roleId
+         where d.account_id = #{accountId}
+
+    </select>
+</mapper>

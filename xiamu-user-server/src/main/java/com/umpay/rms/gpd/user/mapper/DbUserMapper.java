@@ -1,0 +1,93 @@
+package com.umpay.rms.gpd.user.mapper;
+
+
+
+
+import com.umpay.rms.gpd.user.api.entity.DbRole;
+import com.umpay.rms.gpd.user.api.entity.DbUser;
+import com.umpay.rms.gpd.user.api.entity.TbAccount;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
+
+
+/**
+ * (DbUser)表数据库访问层
+ *
+ * @author makejava
+ * @since 2020-06-02 14:51:17
+ */
+public interface DbUserMapper {
+
+    /**
+     * 通过ID查询单条数据
+     *
+     * @param id 主键
+     * @return 实例对象
+     */
+    DbUser queryById(Integer id);
+
+    /**
+     * 查询指定行数据
+     *
+     * @param offset 查询起始位置
+     * @param limit 查询条数
+     * @return 对象列表
+     */
+    List<DbUser> queryAllByLimit(@Param("offset") int offset, @Param("limit") int limit);
+
+/**
+     * 查询指所有
+     *
+     * @param offset 查询起始位置
+     * @param limit 查询条数
+     * @return 对象列表
+     */
+    List<DbUser> queryAll();
+    /**
+     * 通过实体作为筛选条件查询
+     *
+     * @param dbUser 实例对象
+     * @return 对象列表
+     */
+    List<DbUser> queryAll(DbUser dbUser);
+
+    /**
+     * 新增数据
+     *
+     * @param dbUser 实例对象
+     * @return 影响行数
+     */
+    int insert(DbUser dbUser);
+
+    /**
+     * 修改数据
+     *
+     * @param dbUser 实例对象
+     * @return 影响行数
+     */
+    int update(DbUser dbUser);
+
+    /**
+     * 通过主键删除数据
+     *
+     * @param id 主键
+     * @return 影响行数
+     */
+    int deleteById(Integer id);
+
+    List<DbUser> selectUserByUser(DbUser dbUser);
+
+    List<DbUser> selectUserManager(DbUser dbUser);
+
+    List<DbUser> selectUserInfo(DbUser dbUser);
+
+
+    List<DbRole> checkUserRoleByAccountId(TbAccount tbAccount);
+
+    List<DbRole> checkUserRole(DbUser dbUser);
+
+    List<DbUser> selectUserKey(DbUser dbUser);
+
+    List<DbUser> selectRsaUserInfo(DbUser dbUser);
+}

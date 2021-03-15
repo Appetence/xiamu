@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.umpay.rms.gpd.user.mapper.DbRoleMapper">
+
+    <resultMap type="com.umpay.rms.gpd.user.api.entity.DbRole" id="DbRoleMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="parentId" column="parentId" jdbcType="INTEGER"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="enname" column="enname" jdbcType="VARCHAR"/>
+        <result property="description" column="description" jdbcType="VARCHAR"/>
+        <result property="created" column="created" jdbcType="TIMESTAMP"/>
+        <result property="updated" column="updated" jdbcType="TIMESTAMP"/>
+        <result property="appid" column="appid" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="DbRoleMap">
+        select
+          id, parentId, name, enname, description, created, updated, appid
+        from db_role
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="DbRoleMap">
+        select
+          id, parentId, name, enname, description, created, updated, appid
+        from db_role
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="DbRoleMap">
+        select
+          id, parentId, name, enname, description, created, updated, appid
+        from db_role
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="parentId != null and parentId > 0">
+                and parentId = #{parentid}
+            </if>
+            <if test="name != null and name != ''">
+                and name = #{name}
+            </if>
+            <if test="enname != null and enname != ''">
+                and enname = #{enname}
+            </if>
+            <if test="description != null and description != ''">
+                and description = #{description}
+            </if>
+            <if test="created != null">
+                and created = #{created}
+            </if>
+            <if test="updated != null">
+                and updated = #{updated}
+            </if>
+            <if test="appid != null and appid != ''">
+                and appid = #{appid}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into db_role
+        (<if test="parentId != null and parentId > 0">parentId , </if><if test="name != null and name != ''">name , </if><if test="enname != null and enname != ''">enname , </if><if test="description != null and description != ''">description , </if><if test="created != null">created , </if><if test="updated != null">updated , </if><if test="appid != null and appid != ''">appid </if>)
+        values
+        ( <if test="parentId != null and parentId > 0">#{parentid} ,</if>  <if test="name != null and name != ''">#{name} ,</if>  <if test="enname != null and enname != ''">#{enname} ,</if>  <if test="description != null and description != ''">#{description} ,</if>  <if test="created != null">#{created} ,</if>  <if test="updated != null">#{updated} ,</if>  <if test="appid != null and appid != ''">#{appid} </if> )
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update db_role
+        <set>
+            <if test="parentid != null and parentId > 0 ">
+                parentId = #{parentid},
+            </if>
+            <if test="name != null and name != ''">
+                name = #{name},
+            </if>
+            <if test="enname != null and enname != ''">
+                enname = #{enname},
+            </if>
+            <if test="description != null and description != ''">
+                description = #{description},
+            </if>
+            <if test="created != null">
+                created = #{created},
+            </if>
+            <if test="updated != null">
+                updated = #{updated},
+            </if>
+            <if test="appid != null and appid != ''">
+                appid = #{appid},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from db_role where id = #{id}
+    </delete>
+
+</mapper>

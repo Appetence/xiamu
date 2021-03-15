@@ -1,0 +1,795 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.umpay.rms.gpd.user.mapper.TbAccountMapper">
+
+    <resultMap type="com.umpay.rms.gpd.user.api.entity.TbAccount" id="TbAccountMap">
+        <result property="accountId" column="account_id"/>
+        <result property="company" column="company" jdbcType="VARCHAR"/>
+        <result property="status" column="status"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="legalPersonPapers" column="legal_person_papers" jdbcType="VARCHAR"/>
+        <result property="legalPerson" column="legal_person" jdbcType="VARCHAR"/>
+        <result property="email" column="email" jdbcType="VARCHAR"/>
+        <result property="businessLicense" column="business_license" jdbcType="OTHER"/>
+        <result property="securityCertificate" column="security_certificate" jdbcType="OTHER"/>
+        <result property="contactsName" column="contacts_name" jdbcType="VARCHAR"/>
+        <result property="contactsAddress" column="contacts_address" jdbcType="VARCHAR"/>
+        <result property="contactsQq" column="contacts_qq"/>
+        <result property="contactsWchat" column="contacts_wchat" jdbcType="VARCHAR"/>
+        <result property="authenticationStatus" column="authentication_status" jdbcType="VARCHAR"/>
+        <result property="registerTime" column="register_time" jdbcType="TIMESTAMP"/>
+        <result property="parentAccountId" column="parent_account_id"/>
+        <result property="remark" column="remark" jdbcType="VARCHAR"/>
+        <result property="mobile" column="mobile" jdbcType="VARCHAR"/>
+        <result property="serial" column="serial" jdbcType="VARCHAR"/>
+        <result property="agreementContentUri" column="agreement_content_uri" jdbcType="VARCHAR"/>
+        <result property="businessLicenseUri" column="business_license_uri" jdbcType="VARCHAR"/>
+        <result property="securityCertificateUri" column="security_certificate_uri" jdbcType="VARCHAR"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+    <resultMap type="com.umpay.rms.gpd.user.api.entity.TbAccount" id="TbAccountMapById">
+        <result property="accountId" column="account_id"/>
+        <result property="company" column="company" jdbcType="VARCHAR"/>
+        <result property="status" column="status"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="legalPersonPapers" column="legal_person_papers" jdbcType="VARCHAR"/>
+        <result property="legalPerson" column="legal_person" jdbcType="VARCHAR"/>
+        <result property="email" column="email" jdbcType="VARCHAR"/>
+        <result property="businessLicense" column="business_license" jdbcType="OTHER"/>
+        <result property="securityCertificate" column="security_certificate" jdbcType="OTHER"/>
+        <result property="contactsName" column="contacts_name" jdbcType="VARCHAR"/>
+        <result property="contactsAddress" column="contacts_address" jdbcType="VARCHAR"/>
+        <result property="contactsQq" column="contacts_qq"/>
+        <result property="contactsWchat" column="contacts_wchat" jdbcType="VARCHAR"/>
+        <result property="authenticationStatus" column="authentication_status" jdbcType="VARCHAR"/>
+        <result property="registerTime" column="register_time" jdbcType="TIMESTAMP"/>
+        <result property="parentAccountId" column="parent_account_id"/>
+        <result property="remark" column="remark" jdbcType="VARCHAR"/>
+        <result property="parentAccountName" column="parentAccountName" jdbcType="VARCHAR"/>
+        <result property="balanceNumber" column="balanceNumber" jdbcType="VARCHAR"/>
+        <result property="mobile" column="mobile" jdbcType="VARCHAR"/>
+        <result property="serial" column="serial" jdbcType="VARCHAR"/>
+        <result property="agreementContentUri" column="agreement_content_uri" jdbcType="VARCHAR"/>
+        <result property="businessLicenseUri" column="business_license_uri" jdbcType="VARCHAR"/>
+        <result property="securityCertificateUri" column="security_certificate_uri" jdbcType="VARCHAR"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+
+    <sql id="Basic_account_info_sql">
+                     a.account_id,  a.company,  a.status, a.create_time, a.legal_person_papers, a.legal_person, a.email,
+            a.contacts_name, a.contacts_address, a.contacts_qq,
+           a.contacts_wchat, a.authentication_status, a.register_time, a.parent_account_id, a.remark,a.mobile
+           ,a.serial,a.agreement_content_uri,a.business_license_uri,a.security_certificate_uri,a.update_time
+          ,b.company as parentAccountName,d.balance as balanceNumber
+    </sql>
+    <!--查询单个-->
+    <select id="queryById" resultMap="TbAccountMapById">
+        select
+        <include refid="Basic_account_info_sql"/>
+        from tb_account a
+        left join tb_account b on b.account_id = a.parent_account_id
+        left join tb_account_balance d on d.acc_id = a.account_id
+        where a.account_id = #{accountId}
+    </select>
+
+    <sql id="Basic_delegate_sql">
+      agreement_content_uri,business_license_uri,security_certificate_uri,update_time,account_id, company,serial,
+       status, create_time, legal_person_papers, legal_person, email,
+        contacts_name, contacts_address, contacts_qq, contacts_wchat, authentication_status, register_time,
+         parent_account_id, mobile,remark
+
+    </sql>
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="TbAccountMap">
+        select
+        <include refid="Basic_delegate_sql"/>
+        from tb_account
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="TbAccountMap">
+        select
+        account_id, company, status, create_time, legal_person_papers, legal_person, email, contacts_name,
+        contacts_address, contacts_qq, contacts_wchat, authentication_status,
+        register_time, parent_account_id, remark,mobile,agreement_content_uri,business_license_uri,
+        security_certificate_uri,update_time,serial
+        from tb_account
+        <where>
+            <if test="accountId != null ">
+                and account_id = #{accountId}
+            </if>
+            <if test="company != null and company != ''">
+                and company = #{company}
+            </if>
+            <if test="status != null and status >0 ">
+                and status = #{status}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="legalPersonPapers != null and legalPersonPapers != ''">
+                and legal_person_papers = #{legalPersonPapers}
+            </if>
+            <if test="legalPerson != null and legalPerson != ''">
+                and legal_person = #{legalPerson}
+            </if>
+            <if test="email != null and email != ''">
+                and email = #{email}
+            </if>
+            <if test="businessLicense != null">
+                and business_license = #{businessLicense}
+            </if>
+            <if test="securityCertificate != null">
+                and security_certificate = #{securityCertificate}
+            </if>
+            <if test="contactsName != null and contactsName != ''">
+                and contacts_name = #{contactsName}
+            </if>
+            <if test="contactsAddress != null and contactsAddress != ''">
+                and contacts_address = #{contactsAddress}
+            </if>
+            <if test="contactsQq != null and contactsQq >0 ">
+                and contacts_qq = #{contactsQq}
+            </if>
+            <if test="contactsWchat != null and contactsWchat != ''">
+                and contacts_wchat = #{contactsWchat}
+            </if>
+            <if test="authenticationStatus != null and authenticationStatus != ''">
+                and authentication_status = #{authenticationStatus}
+            </if>
+            <if test="registerTime != null">
+                and register_time = #{registerTime}
+            </if>
+            <if test="parentAccountId != null ">
+                and parent_account_id = #{parentAccountId}
+            </if>
+            <if test="remark != null and remark != ''">
+                and remark = #{remark}
+            </if>
+            <if test="mobile != null and mobile != ''">
+                and mobile = #{mobile}
+            </if>
+            <if test="serial != null and serial != ''">
+                and serial = #{serial}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="accountId" useGeneratedKeys="true">
+        insert into tb_account
+        (
+        <if test="accountId != null and accountId != ''">account_id ,</if>
+        <if test="company != null and company != ''">company ,</if>
+        <if test="status != null">status ,</if>
+        <if test="createTime != null">create_time ,</if>
+        <if test="legalPersonPapers != null and legalPersonPapers != ''">legal_person_papers ,</if>
+        <if test="legalPerson != null and legalPerson != ''">legal_person ,</if>
+        <if test="email != null and email != ''">email ,</if>
+        <if test="businessLicense != null">business_license ,</if>
+        <if test="securityCertificate != null">security_certificate ,</if>
+        <if test="contactsName != null and contactsName != ''">contacts_name ,</if>
+        <if test="contactsAddress != null and contactsAddress != ''">contacts_address ,</if>
+        <if test="contactsQq != null">contacts_qq ,</if>
+        <if test="contactsWchat != null and contactsWchat != ''">contacts_wchat ,</if>
+        <if test="authenticationStatus != null and authenticationStatus != ''">authentication_status ,</if>
+        <if test="registerTime != null">register_time ,</if>
+        <if test="parentAccountId != null">parent_account_id ,</if>
+        <if test="serial != null">serial ,</if>
+        <if test="remark != null and remark != ''">remark,</if>
+        <if test="mobile != null">mobile</if>
+
+        )
+        values
+        (
+        <if test="accountId != null and accountId != ''">#{accountId} ,</if>
+        <if test="company != null and company != ''">#{company} ,</if>
+        <if test="status != null">#{status} ,</if>
+        <if test="createTime != null">#{createTime} ,</if>
+        <if test="legalPersonPapers != null and legalPersonPapers != ''">#{legalPersonPapers} ,</if>
+        <if test="legalPerson != null and legalPerson != ''">#{legalPerson} ,</if>
+        <if test="email != null and email != ''">#{email} ,</if>
+        <if test="businessLicense != null">#{businessLicense} ,</if>
+        <if test="securityCertificate != null">#{securityCertificate} ,</if>
+        <if test="contactsName != null and contactsName != ''">#{contactsName} ,</if>
+        <if test="contactsAddress != null and contactsAddress != ''">#{contactsAddress} ,</if>
+        <if test="contactsQq != null">#{contactsQq} ,</if>
+        <if test="contactsWchat != null and contactsWchat != ''">#{contactsWchat} ,</if>
+        <if test="authenticationStatus != null and authenticationStatus != ''">#{authenticationStatus} ,</if>
+        <if test="registerTime != null">#{registerTime} ,</if>
+        <if test="parentAccountId != null">#{parentAccountId} ,</if>
+        <if test="serial != null">#{serial} ,</if>
+        <if test="remark != null and remark != ''">#{remark},</if>
+        <if test="mobile != null">#{mobile}</if>
+
+        )
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update tb_account
+        <set>
+            <if test="company != null and company != ''">
+                company = #{company},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="legalPersonPapers != null and legalPersonPapers != ''">
+                legal_person_papers = #{legalPersonPapers},
+            </if>
+            <if test="legalPerson != null and legalPerson != ''">
+                legal_person = #{legalPerson},
+            </if>
+            <if test="email != null and email != ''">
+                email = #{email},
+            </if>
+            <if test="businessLicense != null">
+                business_license = #{businessLicense},
+            </if>
+            <if test="serial != null">
+                serial = #{serial},
+            </if>
+            <if test="securityCertificate != null">
+                security_certificate = #{securityCertificate},
+            </if>
+            <if test="businessLicenseUri != null and businessLicenseUri != ''">
+                business_license_uri = #{businessLicenseUri},
+            </if>
+            <if test="securityCertificateUri != null and securityCertificateUri != ''">
+                security_certificate_uri = #{securityCertificateUri},
+            </if>
+            <if test="agreementContentUri != null and agreementContentUri != ''">
+                agreement_content_uri = #{agreementContentUri},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="contactsName != null and contactsName != ''">
+                contacts_name = #{contactsName},
+            </if>
+            <if test="contactsAddress != null and contactsAddress != ''">
+                contacts_address = #{contactsAddress},
+            </if>
+            <if test="contactsQq != null">
+                contacts_qq = #{contactsQq},
+            </if>
+            <if test="contactsWchat != null and contactsWchat != ''">
+                contacts_wchat = #{contactsWchat},
+            </if>
+            <if test="authenticationStatus != null and authenticationStatus != ''">
+                authentication_status = #{authenticationStatus},
+            </if>
+            <if test="registerTime != null">
+                register_time = #{registerTime},
+            </if>
+            <if test="parentAccountId != null">
+                parent_account_id = #{parentAccountId},
+            </if>
+            <if test="mobile != null">
+                mobile = #{mobile},
+            </if>
+            <if test="remark != null and remark != ''">
+                remark = #{remark},
+            </if>
+        </set>
+        where account_id = #{accountId}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from tb_account where account_id = #{accountId}
+    </delete>
+
+    <resultMap type="com.umpay.rms.gpd.user.api.entity.TbAccount" id="TbAccountManageMap">
+        <result property="accountId" column="account_id"/>
+        <result property="company" column="company" jdbcType="VARCHAR"/>
+        <result property="status" column="status"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="legalPersonPapers" column="legal_person_papers" jdbcType="VARCHAR"/>
+        <result property="legalPerson" column="legal_person" jdbcType="VARCHAR"/>
+        <result property="email" column="email" jdbcType="VARCHAR"/>
+        <result property="businessLicense" column="business_license" jdbcType="OTHER"/>
+        <result property="securityCertificate" column="security_certificate" jdbcType="OTHER"/>
+        <result property="contactsName" column="contacts_name" jdbcType="VARCHAR"/>
+        <result property="contactsAddress" column="contacts_address" jdbcType="VARCHAR"/>
+        <result property="contactsQq" column="contacts_qq"/>
+        <result property="contactsWchat" column="contacts_wchat" jdbcType="VARCHAR"/>
+        <result property="authenticationStatus" column="authentication_status" jdbcType="VARCHAR"/>
+        <result property="registerTime" column="register_time" jdbcType="TIMESTAMP"/>
+        <result property="parentAccountId" column="parent_account_id"/>
+        <result property="remark" column="remark" jdbcType="VARCHAR"/>
+        <result property="parentAccountName" column="parentAccountName" jdbcType="VARCHAR"/>
+        <result property="phoneNumber" column="phoneNumber" jdbcType="VARCHAR"/>
+        <result property="balanceNumber" column="balanceNumber" jdbcType="VARCHAR"/>
+        <result property="weekSend" column="weekSend" jdbcType="VARCHAR"/>
+        <result property="mobile" column="mobile" jdbcType="VARCHAR"/>
+        <result property="serial" column="serial" jdbcType="VARCHAR"/>
+        <result property="agreementContentUri" column="agreement_content_uri" jdbcType="VARCHAR"/>
+        <result property="businessLicenseUri" column="business_license_uri" jdbcType="VARCHAR"/>
+        <result property="securityCertificateUri" column="security_certificate_uri" jdbcType="VARCHAR"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+    <select id="selectAccountMessage" resultMap="TbAccountManageMap">
+        select a.account_id
+        , a.company
+        , a.status
+        , a.create_time
+        , a.legal_person_papers
+        , a.legal_person
+        , a.email
+        /* , a.business_license
+        , a.security_certificate*/
+        , a.contacts_name
+        , a.contacts_address
+        , a.contacts_qq
+        , a.contacts_wchat
+        , a.authentication_status
+        , a.register_time
+        , a.parent_account_id
+        ,a.agreement_content_uri
+        ,a.business_license_uri
+        ,a.security_certificate_uri
+        ,a.update_time
+        ,a.serial
+        , a.mobile
+        , a.remark
+        , ta.company as parentAccountName
+        ,a.mobile as phoneNumber
+        , tab.balance as balanceNumber
+        ,(select count(d.status) from tb_ec_mms_msg c
+        left join tbl_mt_bill d on d.msgid = c.id
+        where c.acct_id = a.account_id
+        and c.send_status = 2
+        and d.deliverd = 1
+        and c.del_flag = 0
+        and YEARWEEK(date_format(c.create_time,'%Y-%m-%d')) = YEARWEEK(now())) as weekSend
+        from tb_account a
+        left join tb_account ta on a.parent_account_id = ta.account_id
+        left join tb_account_balance tab on a.account_id = tab.acc_id
+        <where>
+            <if test="company != null and company != ''">and a.company LIKE CONCAT(CONCAT('%', #{company}), '%')</if>
+            <if test="parentAccountName != null and parentAccountName != ''">and ta.company LIKE CONCAT(CONCAT('%',
+                #{parentAccountName}), '%')
+            </if>
+            <if test="authenticationStatus != null and authenticationStatus >0">and a.authentication_status =
+                #{authenticationStatus}
+            </if>
+            <if test="accountId != null">and a.account_id LIKE CONCAT(CONCAT('%', #{accountId}), '%')
+            </if>
+            <if test="serial != null">and a.serial LIKE CONCAT(CONCAT('%', #{serial}), '%')
+            </if>
+            <if test="openTime != null and openTime  != '' and endTime != null and endTime  != ''">and a.create_time
+                BETWEEN #{openTime } AND #{endTime }
+            </if>
+        </where>
+        order by a.create_time desc
+    </select>
+    <select id="selectAccountMessages" resultMap="TbAccountManageMap">
+        select a.account_id
+        , a.company
+        , a.status
+        , a.create_time
+        , a.legal_person_papers
+        , a.legal_person
+        , a.email
+        , a.contacts_name
+        , a.contacts_address
+        , a.contacts_qq
+        , a.contacts_wchat
+        , a.authentication_status
+        , a.register_time
+        , a.parent_account_id
+        , a.mobile
+        , a.remark
+        , a.serial
+        ,a.agreement_content_uri
+        ,a.business_license_uri
+        ,a.security_certificate_uri
+        ,a.update_time
+        , ta.company as parentAccountName
+        ,a.mobile as phoneNumber
+        , tab.balance as balanceNumber
+        ,(select count(d.status) from tb_ec_mms_msg c
+        left join tbl_mt_bill d on d.msgid = c.id
+        where c.acct_id = a.account_id
+        and c.send_status = 2
+        and d.deliverd = 1
+        and c.del_flag = 0
+        and YEARWEEK(date_format(c.create_time,'%Y-%m-%d')) = YEARWEEK(now())) as weekSend
+        from tb_account a
+        left join tb_account ta on a.parent_account_id = ta.account_id
+        left join tb_account_balance tab on a.account_id = tab.acc_id
+        <where>
+            <if test="company != null and company != ''">and a.company LIKE CONCAT(CONCAT('%', #{company}), '%')</if>
+            <if test="parentAccountName != null and parentAccountName != ''">and ta.company LIKE CONCAT(CONCAT('%',
+                #{parentAccountName}), '%')
+            </if>
+            <if test="authenticationStatus != null and authenticationStatus >0">and a.authentication_status =
+                #{authenticationStatus}
+            </if>
+            <if test="accountId != null">and a.account_id LIKE CONCAT(CONCAT('%', #{accountId}), '%')
+            </if>
+            <if test="serial != null">and a.serial LIKE CONCAT(CONCAT('%', #{serial}), '%')
+            </if>
+            <if test="openTime != null and openTime  != '' and endTime != null and endTime  != ''">and a.create_time
+                BETWEEN #{openTime } AND #{endTime }
+            </if>
+        </where>
+        order by a.create_time desc
+    </select>
+
+    <!--<resultMap type="com.umpay.rms.gpd.user.api.entity.TbAccount" id="TbAccountManageMap">
+        <result property="accountId" column="account_id" />
+        <result property="company" column="company" jdbcType="VARCHAR"/>
+        <result property="status" column="status" />
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="legalPersonPapers" column="legal_person_papers" jdbcType="VARCHAR"/>
+        <result property="legalPerson" column="legal_person" jdbcType="VARCHAR"/>
+        <result property="email" column="email" jdbcType="VARCHAR"/>
+        <result property="businessLicense" column="business_license" jdbcType="OTHER"/>
+        <result property="securityCertificate" column="security_certificate" jdbcType="OTHER"/>
+        <result property="contactsName" column="contacts_name" jdbcType="VARCHAR"/>
+        <result property="contactsAddress" column="contacts_address" jdbcType="VARCHAR"/>
+        <result property="contactsQq" column="contacts_qq" />
+        <result property="contactsWchat" column="contacts_wchat" jdbcType="VARCHAR"/>
+        <result property="authenticationStatus" column="authentication_status" jdbcType="VARCHAR"/>
+        <result property="registerTime" column="register_time" jdbcType="TIMESTAMP"/>
+        <result property="parentAccountId" column="parent_account_id" />
+        <result property="remark" column="remark" jdbcType="VARCHAR"/>
+        <result property="parentAccountName" column="parentAccountName" jdbcType="VARCHAR"/>
+        <result property="phoneNumber" column="phoneNumber" jdbcType="VARCHAR"/>
+        <result property="balanceNumber" column="balanceNumber" jdbcType="VARCHAR"/>
+    </resultMap>
+    <select id="selectAccountMessage" resultMap="TbAccountManageMap">
+        select a.account_id
+             , a.company
+             , a.status
+             , a.create_time
+             , a.legal_person_papers
+             , a.legal_person
+             , a.email
+             , a.business_license
+             , a.security_certificate
+             , a.contacts_name
+             , a.contacts_address
+             , a.contacts_qq
+             , a.contacts_wchat
+             , a.authentication_status
+             , a.register_time
+             , a.parent_account_id
+             , a.remark
+             , ta.company as parentAccountName
+             ,du.username as phoneNumber
+             , tab.balance as balanceNumber
+        from tb_account a
+                 left join db_user du on a.account_id = du.account_id
+                 left join tb_account ta on a.parent_account_id = ta.account_id
+                 left join tb_account_balance tab on a.account_id = tab.acc_id
+        <where>
+            <if test="company != null and company != ''">and a.company LIKE CONCAT(CONCAT('%', #{company}), '%')</if>
+            <if test="parentAccountName != null and parentAccountName != ''">and ta.company LIKE CONCAT(CONCAT('%', #{parentAccountName}), '%')</if>
+            <if test="authenticationStatus != null and authenticationStatus >0">and a.authentication_status =
+                #{authenticationStatus}
+            </if>
+            <if test="accountId != null">and a.account_id LIKE CONCAT(CONCAT('%', #{accountId}), '%')
+            </if>
+            <if test="openTime != null and openTime  != '' and endTime != null and endTime  != ''">and a.create_time
+                BETWEEN #{openTime } AND #{endTime }
+            </if>
+        </where>
+    </select>-->
+    <resultMap type="com.umpay.rms.gpd.user.api.entity.TbAccount" id="TbAccountManagesMap">
+        <result property="accountId" column="account_id"/>
+        <result property="company" column="company" jdbcType="VARCHAR"/>
+        <result property="status" column="status"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="legalPersonPapers" column="legal_person_papers" jdbcType="VARCHAR"/>
+        <result property="legalPerson" column="legal_person" jdbcType="VARCHAR"/>
+        <result property="email" column="email" jdbcType="VARCHAR"/>
+        <result property="businessLicense" column="business_license" jdbcType="OTHER"/>
+        <result property="securityCertificate" column="security_certificate" jdbcType="OTHER"/>
+        <result property="contactsName" column="contacts_name" jdbcType="VARCHAR"/>
+        <result property="contactsAddress" column="contacts_address" jdbcType="VARCHAR"/>
+        <result property="contactsQq" column="contacts_qq"/>
+        <result property="contactsWchat" column="contacts_wchat" jdbcType="VARCHAR"/>
+        <result property="authenticationStatus" column="authentication_status" jdbcType="VARCHAR"/>
+        <result property="registerTime" column="register_time" jdbcType="TIMESTAMP"/>
+        <result property="parentAccountId" column="parent_account_id"/>
+        <result property="remark" column="remark" jdbcType="VARCHAR"/>
+        <result property="phoneNumber" column="phoneNumber" jdbcType="VARCHAR"/>
+        <result property="balanceNumber" column="balanceNumber" jdbcType="VARCHAR"/>
+        <result property="weekSend" column="weekSend" jdbcType="VARCHAR"/>
+        <result property="mobile" column="mobile" jdbcType="VARCHAR"/>
+        <result property="serial" column="serial" jdbcType="VARCHAR"/>
+        <result property="agreementContentUri" column="agreement_content_uri" jdbcType="VARCHAR"/>
+        <result property="businessLicenseUri" column="business_license_uri" jdbcType="VARCHAR"/>
+        <result property="securityCertificateUri" column="security_certificate_uri" jdbcType="VARCHAR"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+    <select id="selectSunAccount" resultMap="TbAccountManagesMap">
+        select a.account_id
+        , a.company
+        , a.status
+        , a.create_time
+        , a.legal_person_papers
+        , a.legal_person
+        , a.email
+        /* , a.business_license
+        , a.security_certificate*/
+        , a.contacts_name
+        , a.contacts_address
+        , a.contacts_qq
+        , a.contacts_wchat
+        , a.authentication_status
+        , a.register_time
+        , a.parent_account_id
+        , a.remark
+        , a.serial
+        , a.mobile
+        ,a.agreement_content_uri
+        ,a.business_license_uri
+        ,a.security_certificate_uri
+        ,a.update_time
+        , a.mobile as phoneNumber
+        , tab.balance as balanceNumber
+        ,ifnull((select count(d.id) from tb_ec_mms_msg c
+        left join tb_ec_mms_receiver d on d.mms_id = c.id
+        where c.acct_id = a.account_id
+        and c.send_status = 2
+        and d.receipt = 1
+        and c.del_flag = 0
+        and YEARWEEK(date_format(c.create_time,'%Y-%m-%d')) = YEARWEEK(now())) ,0) as weekSend
+        from tb_account a
+        left join tb_account_balance tab on a.account_id = tab.acc_id
+        <where>
+            <if test="company != null and company != ''">and a.company LIKE CONCAT(CONCAT('%', #{company}), '%')</if>
+            <if test="authenticationStatus != null and authenticationStatus >0">and a.authentication_status =
+                #{authenticationStatus}
+            </if>
+            <if test="accountId != null">and a.parent_account_id = #{accountId}</if>
+
+        </where>
+        order by create_time DESC
+    </select>
+    <resultMap type="com.umpay.rms.gpd.user.api.entity.TbAccount" id="TbAccountCheckMap">
+        <result property="accountId" column="account_id"/>
+        <result property="company" column="company" jdbcType="VARCHAR"/>
+        <result property="status" column="status"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="legalPersonPapers" column="legal_person_papers" jdbcType="VARCHAR"/>
+        <result property="legalPerson" column="legal_person" jdbcType="VARCHAR"/>
+        <result property="email" column="email" jdbcType="VARCHAR"/>
+        <result property="businessLicense" column="business_license" jdbcType="OTHER"/>
+        <result property="securityCertificate" column="security_certificate" jdbcType="OTHER"/>
+        <result property="contactsName" column="contacts_name" jdbcType="VARCHAR"/>
+        <result property="contactsAddress" column="contacts_address" jdbcType="VARCHAR"/>
+        <result property="contactsQq" column="contacts_qq"/>
+        <result property="contactsWchat" column="contacts_wchat" jdbcType="VARCHAR"/>
+        <result property="authenticationStatus" column="authentication_status" jdbcType="VARCHAR"/>
+        <result property="registerTime" column="register_time" jdbcType="TIMESTAMP"/>
+        <result property="parentAccountId" column="parent_account_id"/>
+        <result property="remark" column="remark" jdbcType="VARCHAR"/>
+        <result property="parentAccountName" column="parentAccountName" jdbcType="VARCHAR"/>
+        <result property="phoneNumber" column="phoneNumber" jdbcType="VARCHAR"/>
+        <result property="mobile" column="mobile" jdbcType="VARCHAR"/>
+        <result property="serial" column="serial" jdbcType="VARCHAR"/>
+        <result property="agreementContentUri" column="agreement_content_uri" jdbcType="VARCHAR"/>
+        <result property="businessLicenseUri" column="business_license_uri" jdbcType="VARCHAR"/>
+        <result property="securityCertificateUri" column="security_certificate_uri" jdbcType="VARCHAR"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+    <select id="selectAccountCheck" resultMap="TbAccountCheckMap">
+        select a.account_id
+        , a.company
+        , a.status
+        , a.create_time
+        , a.legal_person_papers
+        , a.legal_person
+        , a.email
+        /* , a.business_license
+        , a.security_certificate*/
+        , a.contacts_name
+        , a.contacts_address
+        , a.contacts_qq
+        , a.contacts_wchat
+        , a.authentication_status
+        , a.register_time
+        , a.parent_account_id
+        , a.remark
+        , a.serial
+        , a.mobile
+        ,a.agreement_content_uri
+        ,a.business_license_uri
+        ,a.security_certificate_uri
+        ,a.update_time
+        , ta.company as parentAccountName
+        ,a.mobile as phoneNumber
+        from tb_account a
+        left join tb_account ta on a.parent_account_id = ta.account_id
+        <where>
+            <if test="company != null and company != ''">and a.company LIKE CONCAT(CONCAT('%', #{company}), '%')</if>
+            <if test="phoneNumber != null and phoneNumber != ''">and du.username LIKE CONCAT(CONCAT('%',
+                #{phoneNumber}), '%')
+            </if>
+            <if test="authenticationStatus != null and authenticationStatus >0">and a.authentication_status =
+                #{authenticationStatus}
+            </if>
+            <if test="accountId != null">and a.account_id LIKE CONCAT(CONCAT('%', #{accountId}), '%')
+            </if>
+            <if test="serial != null">and a.serial LIKE CONCAT(CONCAT('%', #{serial}), '%')
+            </if>
+            <if test="openTime != null and openTime  != '' and endTime != null and endTime  != ''">and a.create_time
+                BETWEEN #{openTime } AND #{endTime }
+            </if>
+        </where>
+        order by a.create_time desc
+    </select>
+    <select id="selectAccountChecks" resultMap="TbAccountCheckMap">
+        select a.account_id
+        , a.company
+        , a.status
+        , a.create_time
+        , a.legal_person_papers
+        , a.legal_person
+        , a.email
+        , a.contacts_name
+        , a.contacts_address
+        , a.contacts_qq
+        , a.contacts_wchat
+        , a.authentication_status
+        , a.register_time
+        , a.parent_account_id
+        , a.remark
+        , a.serial
+        , a.mobile
+        ,a.agreement_content_uri
+        ,a.business_license_uri
+        ,a.security_certificate_uri
+        ,a.update_time
+        , ta.company as parentAccountName
+        ,a.mobile as phoneNumber
+        from tb_account a
+        left join tb_account ta on a.parent_account_id = ta.account_id
+        <where>
+            <if test="company != null and company != ''">and a.company LIKE CONCAT(CONCAT('%', #{company}), '%')</if>
+            <if test="phoneNumber != null and phoneNumber != ''">and a.mobile LIKE CONCAT(CONCAT('%',
+                #{phoneNumber}), '%')
+            </if>
+            <if test="authenticationStatus != null and authenticationStatus >0">and a.authentication_status =
+                #{authenticationStatus}
+            </if>
+            <if test="accountId != null">and a.account_id LIKE CONCAT(CONCAT('%', #{accountId}), '%')
+            </if>
+            <if test="serial != null">and a.serial LIKE CONCAT(CONCAT('%', #{serial}), '%')
+            </if>
+            <if test="openTime != null and openTime  != '' and endTime != null and endTime  != ''">and a.create_time
+                BETWEEN #{openTime } AND #{endTime }
+            </if>
+        </where>
+        order by a.create_time desc
+    </select>
+    <select id="countSunAccountSend" parameterType="com.umpay.rms.gpd.user.api.entity.TbAccount"
+            resultType="java.lang.Integer">
+/*      select count(b.company)
+from   tb_account b
+         left join tb_ec_mms_msg c on c.acct_id = b.account_id
+where b.parent_account_id = #{accountId}  and c.send_status = 2  and c.del_flag = 0 and YEARWEEK(date_format(c.create_time,'%Y-%m-%d')) = YEARWEEK(now()) group by b.account_id*/
+SELECT count(account_id)  as result  from (select b.account_id
+from   tb_account b
+         left join tb_ec_mms_msg c on c.acct_id = b.account_id
+where b.parent_account_id =#{accountId}
+and c.send_status = 2  and c.del_flag = 0 and YEARWEEK(date_format(c.create_time,'%Y-%m-%d')) = YEARWEEK(now()) group by b.account_id)as a
+    </select>
+    <select id="countSunAccountSends" parameterType="java.lang.String" resultType="java.lang.Integer">
+SELECT count(account_id)  as result  from (select b.account_id
+from   tb_account b
+         left join tb_ec_mms_msg c on c.acct_id = b.account_id
+where b.parent_account_id =#{accountId}
+and c.send_status = 2  and c.del_flag = 0 and YEARWEEK(date_format(c.create_time,'%Y-%m-%d')) = YEARWEEK(now()) group by b.account_id)as a
+    </select>
+    <select id="countAccountSendNumber" parameterType="com.umpay.rms.gpd.user.api.entity.TbAccount"
+            resultType="java.lang.Integer">
+        select ifnull( count(c.send_status),0)
+        from   tb_account b
+                 left join tb_ec_mms_msg c on c.acct_id = b.account_id
+        where b.parent_account_id = #{accountId} and c.send_status = 2   and c.del_flag = 0 and YEARWEEK(date_format(c.send_time,'%Y-%m-%d')) = YEARWEEK(now())
+    </select>
+    <!--    <select id="countAccountSendNumber" resultType="java.lang.Integer">
+        select count(c.send_status)
+        from   tb_account b
+                 left join tb_ec_mms_msg c on c.acct_id = b.account_id
+                 left join tb_ec_mms_receiver d on d.mms_id = c.id
+        where b.parent_account_id = #{accountId} and c.send_status = 2  and d.receipt = 1 and c.del_flag = 0 and YEARWEEK(date_format(c.create_time,'%Y-%m-%d')) = YEARWEEK(now())
+    </select>-->
+    <select id="countSendNumberByAccount" resultType="java.lang.Integer">
+select ifnull(count(d.status),0)
+from   tb_account b
+           left join tb_ec_mms_msg c on c.acct_id = b.account_id
+           left join tbl_mt_bill d on d.msgid = c.id
+        where b.account_id = #{accountId} and c.send_status = 2  and d.deliverd = 1  and c.del_flag = 0 and YEARWEEK(date_format(c.send_time,'%Y-%m-%d')) = YEARWEEK(now())
+    </select>
+    <select id="countAccountSendNumberByAccount" resultType="java.lang.Integer">
+        select ifnull( count(c.acct_id) , 0)
+        from   tb_account b
+                 left join tb_ec_mms_msg c on c.acct_id = b.account_id
+        where b.account_id = #{accountId} and c.send_status = 2  and c.del_flag = 0 and YEARWEEK(date_format(c.send_time,'%Y-%m-%d')) = YEARWEEK(now())
+    </select>
+    <select id="countAccountTodayReceive" resultType="com.umpay.rms.gpd.user.api.entity.TbAccount">
+select (select IFNULL(count(c.id), 0)
+        from tb_ec_mms_msg b
+                 left join tbl_mt_bill c on c.msgid = b.id
+        where b.acct_id = a.account_id
+          and b.send_status = 2
+          and b.del_flag = 0
+          and c.deliverd = 1
+          and TO_DAYS(b.send_time) = TO_DAYS(now()))   as todaySendSuccess,
+       (select IFNULL(count(c.id), 0)
+        from tb_ec_mms_msg b
+                 left join tbl_mt_bill c on c.msgid = b.id
+        where b.acct_id = a.account_id
+          and b.send_status = 2
+          and b.del_flag = 0
+          and c.deliverd = 0
+          and c.report_time is not null
+          and TO_DAYS(b.send_time) = TO_DAYS(now()))   as todaySendFail,
+       ((select IFNULL(count(c.id), 0)
+         from tb_ec_mms_msg b
+                  left join tbl_mt_bill c on c.msgid = b.id
+         where b.acct_id = a.account_id
+           and b.send_status = 2
+           and b.del_flag = 0
+           and TO_DAYS(b.send_time) = TO_DAYS(now())) -
+             (select IFNULL(count(c.id), 0)
+             from tb_ec_mms_msg b
+                      left join tbl_mt_bill c on c.msgid = b.id
+             where b.acct_id = a.account_id
+               and b.send_status = 2
+               and b.del_flag = 0
+               and c.deliverd = 0
+               and c.report_time is not null
+               and TO_DAYS(b.send_time) = TO_DAYS(now())) -
+            (select IFNULL(count(c.id), 0)
+             from tb_ec_mms_msg b
+                      left join tbl_mt_bill c on c.msgid = b.id
+             where b.acct_id = a.account_id
+               and b.send_status = 2
+               and b.del_flag = 0
+               and c.deliverd = 1
+               and TO_DAYS(b.send_time) = TO_DAYS(now()))) as todaySendUnKnow,
+           (select IFNULL(count(c.id), 0)
+        from tb_ec_mms_msg b
+                 left join tbl_mt_bill c on c.msgid = b.id
+        where b.acct_id = a.account_id
+          and b.send_status = 2
+          and b.del_flag = 0
+          and TO_DAYS(b.send_time) = TO_DAYS(now()))   as todaySendSum
+
+
+from tb_account a
+ where  a.account_id = #{accountId}
+
+    </select>
+    <select id="selectDelegates" resultMap="TbAccountCheckMap">
+        select
+        <include refid="Basic_delegate_sql"/>
+        from tb_account where company like CONCAT('%',#{company},'%')
+
+    </select>
+    <select id="getAccountInfoByAccountIds" parameterType="java.util.ArrayList"
+            resultMap="TbAccountManagesMap">
+        select
+        account_id, company
+        from tb_account
+        where account_id in
+        <foreach collection="list" item="valueList" open="(" close=")" separator=",">
+            #{valueList}
+        </foreach>
+
+    </select>
+</mapper>

@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.umpay.rms.gpd.user.mapper.DbUserLogMapper">
+
+    <resultMap type="com.umpay.rms.gpd.user.api.entity.DbUserLog" id="DbUserLogMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="username" column="username" jdbcType="VARCHAR"/>
+        <result property="ip" column="ip" jdbcType="VARCHAR"/>
+        <result property="address" column="address" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="uid" column="uid" jdbcType="INTEGER"/>
+        <result property="status" column="status" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="DbUserLogMap">
+        select
+          id, username, ip, address, create_time, uid, status
+        from db_user_log
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="DbUserLogMap">
+        select
+          id, username, ip, address, create_time, uid, status
+        from db_user_log
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="DbUserLogMap">
+        select
+          id, username, ip, address, create_time, uid, status
+        from db_user_log
+        <where>
+            <if test="id != null and id >0">
+                and id = #{id}
+            </if>
+            <if test="username != null and username != ''">
+                and username = #{username}
+            </if>
+            <if test="ip != null and ip != ''">
+                and ip = #{ip}
+            </if>
+            <if test="address != null and address != ''">
+                and address = #{address}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="uid != null and uid >0">
+                and uid = #{uid}
+            </if>
+            <if test="status != null and status >0">
+                and status = #{status}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into db_user_log
+        (<if test="username != null">username , </if><if test="ip != null and ip != ''">ip , </if><if test="address != null and address != ''">address , </if><if test="createTime != null">create_time , </if><if test="uid != null">uid , </if><if test="status != null">status </if>)
+        values
+        ( <if test="username != null">#{username} ,</if>  <if test="ip != null and ip != ''">#{ip} ,</if>  <if test="address != null and address != ''">#{address} ,</if>  <if test="createTime != null">#{createTime} ,</if>  <if test="uid != null">#{uid} ,</if>  <if test="status != null">#{status} </if> )
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update db_user_log
+        <set>
+            <if test="username != null">
+                username = #{username},
+            </if>
+            <if test="ip != null and ip != ''">
+                ip = #{ip},
+            </if>
+            <if test="address != null and address != ''">
+                address = #{address},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="uid != null">
+                uid = #{uid},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from db_user_log where id = #{id}
+    </delete>
+
+</mapper>

@@ -1,0 +1,46 @@
+jdbc:
+  driverClassName: com.mysql.cj.jdbc.Driver
+  url: jdbc:mysql://127.0.0.1:3306/db2020?characterEncoding=utf8&autoReconnect=true
+  username: root
+  password: root
+spring:
+  profiles:
+    active: dev
+  application:
+    name: comp-vue-server
+  redis:
+    port: 6379
+    host: 127.0.0.1
+#mybatis配置
+mybatis:
+  mapperLocations: classpath*:mapper/*.xml
+  typeAliasesPackage: demo.entity
+server:
+  port: 8888
+  servlet:
+    context-path: /
+alipay:
+  #商户秘钥
+  app-private-key: MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQC67fEsUTWVWnNPsx2OmOg2/n9AbDj8XM9suGR4EBOepjXIZ4woclISSnevreEE0UhOWf5iWGQiB8dvVhPK+wNQYMZ2WmjHR43r7KYcDRVUjR66Wc2/qfOwz74O6NjKuz0gnDbXXWo4TxcMHM7DxI2ksKthSpDf1kw4zPIEYQHotojILBO16+qfE/Hh5tYZS1d38LidOebweKBGaZAiIHCSPZgd5DpaphNKoLLr7S1gRGUZDQrv9YXWA6AN9PoIWAXqmSYgWN/Q8DAeMd5e+azHd2RoBkYnJXtpT92vcVEqW6L4qgXjprLC1xcd90gZi++q3WZ0zSFmb6AS6PP9zrPNAgMBAAECggEAIljaObRqThkimwBka/E4qfI1W5cHGYfMLUPsYgtCL6KGu14baMsovWelekhO0l3KFWt/zH5FV+NqB9EfLerVfw1pKhIOsp85OqJvGzRkOPb9MGyT26XUuyZQ29h5DTc+UiGiCgyGGfaeW4FnlJ0nEZ3Mv8G9wQNVWhJ+XcOdYC7o2TsC1oVn8DQqgCt3msMA8WaBuMSjHlpXLqmnMaercjKxMtT/4+0JK/aueRulSaIgOaArKwDeunMZD3u1rtz3DZz++nLzvYZDEH0jflVuyQMjo9JCk56nLwV+5pNlSOttAhNc5voVaBeXRB+h3uHCZ5i71elmXt+P1rdymXo2WQKBgQD8TiVNYEMUJbUMq8h8k+ODFwNF61wbFzPzHMPS4h2SlqFcH2n0Z2AmkXMNIQFtkeTdXiOlcDwjvllZUY3XG7ydMtqpLUAZxJpc6npXhYTvrlcXB3vN5CbHvRNa9c1QGKiTIzHxOCt1uwEmGK0AkZKQg5d5GgKYQ0U2RAahyYSQxwKBgQC9qrZfPR8c2XV1Fa2Y3iuAx6mQ0BbFykVd2HaMKBkJvI2p3swwli6PHsyR8PjLN1y6HnrrEKqtfbYxFP5j4R0MOqfQQP2vi83BXv7qI8zP1szIh+ogYT3S40hVDzkIP3ngesVFum0963SBE8UHUXldmAx/Y8dXQhPdHFMCCdbqywKBgQDwX+s+CqYdvcb96XO67JLnQ7eEl7VKwhJmXlNayL5v+D6HLA6gIRUD6bL5ISbhIwwusw+3AHTrgOBTLlW6SNyrz9VvNINLiXmfaG1ikPyT9T9X23NiNymTRln4YRJYawXAGNnt/Ru6sI1ppDy+u/Is6JIZeGRceEqqZqkC3qED5QKBgDhg+28aAxqXRYP1WrH7MKFKOIxUXsCSnMYFp0+IR9EOHGonUTkMG3Dtrc+f+sSlg0nL76vaO3Hw0WyLmgbkjrbo5KNR/lblTtcxPsMouyP47MybIixX24HJj+HA8aoS/E6PD/7nKLvkNrB7yPCg9lus6+IeLc4xVSg/2Cjd9eW7AoGAdBmHMJ5GaMf8igAprRH3XkNtlwPpEC4lasuNtcZb4mcTSwOBGIgv0nuUi1LrZKi1QSr5z72zCyDQ7zwgqtIyE7bNRzGfeinynMLAuyi2igLRabOhco6yQq58C1zUSgP85GoTx31eTfGRisXoR53H7l+JxLX/FkbWWJ4PqcSCnyE=
+  #支付宝公钥
+  public-key: MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAuu3xLFE1lVpzT7MdjpjoNv5/QGw4/FzPbLhkeBATnqY1yGeMKHJSEkp3r63hBNFITln+YlhkIgfHb1YTyvsDUGDGdlpox0eN6+ymHA0VVI0eulnNv6nzsM++DujYyrs9IJw2111qOE8XDBzOw8SNpLCrYUqQ39ZMOMzyBGEB6LaIyCwTtevqnxPx4ebWGUtXd/C4nTnm8HigRmmQIiBwkj2YHeQ6WqYTSqCy6+0tYERlGQ0K7/WF1gOgDfT6CFgF6pkmIFjf0PAwHjHeXvmsx3dkaAZGJyV7aU/dr3FRKlui+KoF46aywtcXHfdIGYvvqt1mdM0hZm+gEujz/c6zzQIDAQAB
+  #商户APPID
+  app-id: 2021002100610059
+  #商家和支付宝签约的产品码，为固定值QUICK_MSECURITY_PAY
+  product-code: FAST_INSTANT_TRADE_PAY
+  #支付宝网关地址
+  gateway: https://openapi.alipay.com/gateway.do
+  #交易关闭时间
+  close-trade-time: https://api.mch.weixin.qq.com/pay/orderquery
+  #商户id
+  seller-id: 2088122784177832
+#微信支付
+wxpay:
+  appId: wx2cdaecxxxxxxxxxx
+  mchId: 1504000000
+  key: P5SexchkWHZdWJTrBZsyHsxxxxxxxxxx
+  unifiedorder.api: https://api.mch.weixin.qq.com/pay/unifiedorder
+  query.api: https://api.mch.weixin.qq.com/pay/orderquery
+services:
+  address:
+    - pay: http://192.168.33.239:8087

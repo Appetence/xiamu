@@ -1,0 +1,174 @@
+server:
+  port: 18040
+spring:
+  logging:
+    level:
+      root: debug
+  profiles:
+    active: dev
+  cloud:
+    loadbalancer:
+      retry:
+        enabled: true #负载均衡重试
+  application:
+    name: xiamu-user-server
+  main:
+    allow-bean-definition-overriding: true
+  redis:
+#    host: 10.10.183.133
+    port: 6379
+  # =========================== zipkin ===========================
+#  zipkin:
+#    base-url: http://10.10.183.67:9411
+  # =========================== sleuth ===========================
+  sleuth:
+    sampler:
+      percentage: 1.0
+  # =========================== 静态文件路径 ===========================
+  resources:
+    static-locations: file:/opt/app/cms/mgr-web
+  jackson:
+    serialization:
+      FAIL_ON_EMPTY_BEANS: false
+rocketmq:
+  # 生产者配置
+  producer:
+    isOnOff: on
+    # 发送同一类消息的设置为同一个group，保证唯一
+    groupName: gpd_cloud
+    # 服务地址
+    #    namesrvAddr: 10.10.183.76:9876
+    # 消息最大长度 默认1024*4(4M)
+    maxMessageSize: 4096
+    # 发送消息超时时间,默认3000
+    sendMsgTimeout: 3000
+    # 发送消息失败重试次数，默认2
+    retryTimesWhenSendFailed: 2
+  # 消费者配置
+  consumer:
+    isOnOff: on
+    # 官方建议：确保同一组中的每个消费者订阅相同的主题。
+    groupName: gpd_cloud
+    # 服务地址
+    #    namesrvAddr: 10.10.183.76:9876
+    # 接收该 Topic 下所有 Tag
+    topics: gpd_cloud_COMMON_SMS_SEND~*
+    #    topics: gpd_cloud_sms_code~*;
+    consumeThreadMin: 20
+    consumeThreadMax: 64
+    # 设置一次消费消息的条数，默认为1条
+    consumeMessageBatchMaxSize: 1
+# 配置 Group  Topic  Tag
+rocket:
+  group: gpd_cloud
+  topic: gpd_cloud_COMMON_SMS_SEND
+  tag:
+    sms: sms
+
+all:
+  in:
+    one:
+      jessionid: JSESSIONID
+      diff: 300
+      lockKey: redisAccount
+      loginKey: loginKey
+      filesize: 1887436.8
+      excelfilesize: 1
+      video: 469906293214150656
+      texts: 469906139841036288
+      audio: 469906224133963776
+      account:
+        id: 456841645858488300
+        info:
+          size: 10485760
+          fastdfs:
+            prefix: file/
+      register:
+        count: 5
+      forgot:
+        count: 5
+      regist:
+        rule: 40
+        give:
+          sms:
+            balance: 10
+          vedio:
+            balance: 10
+          audio:
+            balance: 10
+      code:
+        register:
+          sms:
+            effective:
+              time: 600
+          effective:
+            time: 7200
+        forgot:
+          sms:
+            effective:
+              time: 600
+          effective:
+            time: 7200
+services:
+  address:
+    - pay: http://127.0.0.1:18884
+# =========================== mybatis ===========================
+mybatis:
+  typeAliasesPackage: com.umpay.rms.gpd.user.api.entity
+  mapperLocations: classpath*:mapper/*.xml
+
+# =========================== eureka ===========================
+eureka:
+  healthcheck:
+    enabled: true
+  client:
+    #自己注册到eureka
+    register-with-eureka: true
+    #是否从rabbion获取已注册信息，默认为true，单节点无所谓，集群只有设置为true才能配合rabbion做负载
+    fetch-registry: true
+    #    service-url:
+    #      defaultZone: http://127.0.0.1:18010/eureka
+    #      defaultZone: http://10.10.183.67:18010/eureka
+    # 集群版
+    # defaultZone: http://eureka7001.com:7001/eureka,http://eureka7002.com:7002/eureka
+  instance:
+    instance-id: ${spring.application.name}:${spring.cloud.client.ip-address}:${server.port}
+    # 访问路径可以显示ip地址
+    prefer-ip-address: true
+    hostname: xiamu-user-server
+    # eureka client发送心跳给server端的频率
+    lease-renewal-interval-in-seconds: 2
+#ribbon的超时时间
+ribbon:
+  MaxAutoRetries: 1 #最大重试次数，当Eureka中可以找到服务，但是服务连不上时将会重试
+  MaxAutoRetriesNextServer: 1 #切换实例的重试次数
+  OkToRetryOnAllOperations: false # 对所有的操作请求都进行重试，如果是get则可以，如果是post,put等操作没有实现幂等的情况下是很危险的
+  ConnectTimeout: 250 #请求连接的超时时间
+  ReadTimeout: 30000 #请求处理的超时时间
+  SocketTimeout: 40000
+  eureka:
+    enabled: true
+  #读取资源用时
+  #链接时间
+  hystrix:
+    command:
+      userGetKey:
+        execution:
+          isolation:
+            thread:
+              timeoutInMilliseconds: 40000
+      default: #feign调用默认是1000毫秒=1秒
+        execution:
+          isolation:
+            thread:
+              timeoutInMilliseconds: 40000
+          timeout: #超时限制
+            enabled: true
+        circuitBreaker:
+          sleepWindowInMilliseconds: 40000
+          forceClosed: true
+  feign:
+    hystrix:
+      enabled: true #启动feign对hystrix的支持
+
+

@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.umpay.rms.gpd.user.TbAccountRecordDao">
+
+    <resultMap type="com.umpay.rms.gpd.user.api.entity.TbAccountRecord" id="TbAccountRecordMap">
+        <result property="id" column="id" />
+        <result property="number" column="number"/>
+        <result property="status" column="status" />
+        <result property="flag" column="flag" />
+        <result property="accId" column="acc_id" jdbcType="VARCHAR"/>
+        <result property="operatAccId" column="operat_acc_id" />
+        <result property="remark" column="remark" jdbcType="VARCHAR"/>
+        <result property="beforNumber" column="befor_number"/>
+        <result property="operatUserId" column="operat_user_id" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    id, number, status, flag, acc_id, operat_acc_id, remark, create_time,befor_number,operat_user_id
+  </sql>
+    <!--查询单个-->
+    <select id="queryById" resultMap="TbAccountRecordMap">
+        select
+          id, number, status, flag, acc_id, operat_acc_id, remark, create_time,befor_number,operat_user_id
+        from tb_account_record
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="TbAccountRecordMap">
+        select
+          id, number, status, flag, acc_id, operat_acc_id, remark, create_time,befor_number,operat_user_id
+        from tb_account_record
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="TbAccountRecordMap">
+        select
+        id, number, status, flag, acc_id, operat_acc_id, remark, create_time,befor_number,operat_user_id
+        from tb_account_record
+        <where>
+            <if test="id != null and id >0">
+                and id = #{id}
+            </if>
+            <if test="number != null and number >0">
+                and number = #{number}
+            </if>
+            <if test="status != null and status >0">
+                and status = #{status}
+            </if>
+            <if test="flag != null and flag >0">
+                and flag = #{flag}
+            </if>
+            <if test="accId != null and accId != ''">
+                and acc_id = #{accId}
+            </if>
+            <if test="operatAccId != null">
+                and operat_acc_id = #{operatAccId}
+            </if>
+            <if test="remark != null and remark != ''">
+                and remark = #{remark}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="beforNumber != null and beforNumber != ''">
+                and befor_number = #{beforNumber}
+            </if>
+            <if test="operatUserId != null">
+                and operat_user_id = #{operatUserId}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into tb_account_record
+        (
+        <if test="number != null">number ,</if>
+        <if test="status != null">status ,</if>
+        <if test="flag != null">flag ,</if>
+        <if test="accId != null and accId != ''">acc_id ,</if>
+        <if test="operatAccId != null">operat_acc_id ,</if>
+        <if test="beforNumber != null and beforNumber != ''">befor_number ,</if>
+        <if test="operatUserId != null and operatUserId != ''">operat_user_id ,</if>
+        <if test="remark != null and remark != ''">remark ,</if>
+        <if test="createTime != null">create_time</if>)
+        values
+        (
+        <if test="number != null">#{number} ,</if>
+        <if test="status != null">#{status} ,</if>
+        <if test="flag != null">#{flag} ,</if>
+        <if test="accId != null and accId != ''">#{accId} ,</if>
+        <if test="operatAccId != null">#{operatAccId} ,</if>
+        <if test="beforNumber != null and beforNumber != ''">#{beforNumber} ,</if>
+        <if test="operatUserId != null and operatUserId != ''">#{operatUserId} ,</if>
+        <if test="remark != null and remark != ''">#{remark} ,</if>
+        <if test="createTime != null">#{createTime}</if>
+        )
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update tb_account_record
+        <set>
+            <if test="number != null">
+                number = #{number},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+            <if test="flag != null">
+                flag = #{flag},
+            </if>
+            <if test="accId != null and accId != ''">
+                acc_id = #{accId},
+            </if>
+            <if test="operatAccId != null">
+                operat_acc_id = #{operatAccId},
+            </if>
+            <if test="remark != null and remark != ''">
+                remark = #{remark},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="beforNumber != null and beforNumber != ''">
+                befor_number = #{beforNumber},
+            </if>
+            <if test="operatUserId != null and operatUserId != ''">
+                operat_user_id = #{operatUserId},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from tb_account_record where id = #{id}
+    </delete>
+    <resultMap type="com.umpay.rms.gpd.user.api.entity.TbAccountRecord" id="TbAccountRecordsMap">
+        <result property="id" column="id" />
+        <result property="number" column="number"/>
+        <result property="company" column="company"/>
+        <result property="status" column="status" />
+        <result property="flag" column="flag" />
+        <result property="accId" column="acc_id" jdbcType="VARCHAR"/>
+        <result property="operatAccId" column="operat_acc_id" />
+        <result property="operatUserId" column="operat_user_id" />
+        <result property="remark" column="remark" jdbcType="VARCHAR"/>
+        <result property="beforNumber" column="befor_number"/>
+        <result property="sumNumber" column="sumNumber"/>
+        <result property="createTime" column="create_time"/>
+        <result property="serial" column="serial"/>
+    </resultMap>
+    <sql id="Base_Column_Lists">
+    b.serial,a.id, a.number, a.status, a.flag, a.acc_id, a.operat_acc_id, a.remark, a.create_time,a.befor_number,a.operat_user_id,b.company,(a.befor_number+a.number) as sumNumber
+  </sql>
+    <select id="selectSunAccountRecord" resultMap="TbAccountRecordsMap">
+        SELECT
+        <include refid="Base_Column_Lists"/>
+        FROM tb_account_record a left join tb_account b on b.account_id = a.acc_id
+        <where>
+            <if test="accId != null and accId != ''">
+                AND a.acc_id = #{accId}
+            </if>
+            <if test="flag != null and flag != ''">
+                AND a.flag = #{flag}
+            </if>
+
+            <if test="parentAccountId != null and parentAccountId != ''">
+                AND b.parent_account_id = #{parentAccountId}
+            </if>
+            <if test="company != null and company != ''">
+                AND b.company like CONCAT('%', #{company},'%')
+            </if>
+            <if test="openTime != null and openTime != ''">
+                and a.create_time > #{openTime}
+            </if>
+            <if test="endTime != null and endTime != ''">
+                and a.create_time &lt; #{endTime}
+            </if>
+        </where>
+        order by a.create_time desc
+
+    </select>
+    <resultMap type="com.umpay.rms.gpd.user.api.entity.TbAccountRecord" id="DelegateTbAccountRecordsMap">
+        <result property="id" column="id" />
+        <result property="number" column="number"/>
+        <result property="company" column="company"/>
+        <result property="status" column="status" />
+        <result property="flag" column="flag" />
+        <result property="accId" column="acc_id" jdbcType="VARCHAR"/>
+        <result property="operatAccId" column="operat_acc_id"/>
+        <result property="remark" column="remark" jdbcType="VARCHAR"/>
+        <result property="beforNumber" column="befor_number"/>
+        <result property="sumNumber" column="sumNumber"/>
+        <result property="createTime" column="create_time"/>
+        <result property="delegateName" column="delegateName"/>
+        <result property="serial" column="serial"/>
+    </resultMap>
+    <sql id="Delegate_Base_Column_Lists">
+     b.serial,c.company as delegateName, a.id, a.number, a.status, a.flag, a.acc_id, a.operat_acc_id, a.remark, a.create_time,a.befor_number,a.operat_user_id,b.company,(a.befor_number+a.number) as sumNumber
+  </sql>
+    <select id="selectDelegateAccountRechangeRecord" resultMap="DelegateTbAccountRecordsMap">
+        SELECT
+        <include refid="Delegate_Base_Column_Lists"/>
+        FROM tb_account_record a left join tb_account b on b.account_id = a.acc_id left join tb_account c on
+        a.operat_acc_id = c.account_id left join db_user d on d.account_id = c.account_id left join db_user_role e on
+        e.userId = d.id
+        <where>
+            c.authentication_status = 1 and e.roleId = 38 and ( a.flag in (3) )
+            <if test="company != null and company != ''">
+                AND c.company like CONCAT('%', #{company},'%')
+            </if>
+            <if test="openTime != null and openTime != ''">
+                and a.create_time > #{openTime}
+            </if>
+            <if test="endTime != null and endTime != ''">
+                and a.create_time &lt; #{endTime}
+            </if>
+        </where>
+        group by a.id
+        order by a.create_time desc
+
+    </select>
+    <!--countAccountWeekRechangeNumber-->
+    <select id="countAccountWeekRechangeNumber" resultType="com.umpay.rms.gpd.user.api.entity.TbAccountBalance">
+
+select IFNULL(sum(number),0) as weekRechange
+    from tb_account_record where operat_acc_id=#{acctId} and flag=2 and status=1
+       and   to_days(create_time) = to_days(now())
+    </select>
+
+</mapper>

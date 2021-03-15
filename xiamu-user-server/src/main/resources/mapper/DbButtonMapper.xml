@@ -1,0 +1,367 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.umpay.rms.gpd.user.mapper.DbButtonMapper">
+
+    <resultMap type="com.umpay.rms.gpd.user.api.entity.DbButton" id="DbButtonResultMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="ename" column="ename" jdbcType="VARCHAR"/>
+        <result property="url" column="url" jdbcType="VARCHAR"/>
+        <result property="description" column="description" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="appid" column="appid" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="table_field">
+      id, name, ename, url, description, create_time, appid      
+    </sql>
+
+    <!--通过Id查询单个-->
+    <select id="getById" resultMap="DbButtonResultMap">
+        select
+        <include refid="table_field"/>
+        from db_button
+        where id = #{id}
+    </select>
+
+
+    <!--通过实体不为空的属性作为筛选条件查询列表-->
+    <select id="listByEntity" resultMap="DbButtonResultMap" parameterType="com.umpay.rms.gpd.user.api.entity.DbButton">
+        select
+        <include refid="table_field"/>
+        from db_button
+        <where>
+            <if test="id != null">
+                and id = #{id,jdbcType=INTEGER}
+            </if>
+            <if test="name != null">
+                and name = #{name,jdbcType=VARCHAR}
+            </if>
+            <if test="ename != null">
+                and ename = #{ename,jdbcType=VARCHAR}
+            </if>
+            <if test="url != null">
+                and url = #{url,jdbcType=VARCHAR}
+            </if>
+            <if test="description != null">
+                and description = #{description,jdbcType=VARCHAR}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="appid != null">
+                and appid = #{appid,jdbcType=INTEGER}
+            </if>
+        </where>
+    </select>
+
+    <!--通过实体不为空的属性作为筛选条件查询单个-->
+    <select id="getByEntity" resultMap="DbButtonResultMap" parameterType="com.umpay.rms.gpd.user.api.entity.DbButton">
+        select
+        <include refid="table_field"/>
+        from db_button
+        <where>
+            <if test="id != null">
+                and id = #{id,jdbcType=INTEGER}
+            </if>
+            <if test="name != null">
+                and name = #{name,jdbcType=VARCHAR}
+            </if>
+            <if test="ename != null">
+                and ename = #{ename,jdbcType=VARCHAR}
+            </if>
+            <if test="url != null">
+                and url = #{url,jdbcType=VARCHAR}
+            </if>
+            <if test="description != null">
+                and description = #{description,jdbcType=VARCHAR}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="appid != null">
+                and appid = #{appid,jdbcType=INTEGER}
+            </if>
+        </where>
+    </select>
+
+    <!--通过Id列表作为筛选条件查询列表，列表长度不为0-->
+    <select id="listByIds" resultMap="DbButtonResultMap" parameterType="list">
+        select
+        <include refid="table_field"/>
+        from db_button
+        where in
+        <foreach item="item" collection="list" separator="," open="(" close=")" index="index">
+            #{item}
+        </foreach>
+    </select>
+
+    <!--新增实体属性不为null的列-->
+    <insert id="insert" keyProperty="" useGeneratedKeys="true" parameterType="com.umpay.rms.gpd.user.api.entity.DbButton">
+        insert into db_button
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="name != null">
+                name,
+            </if>
+            <if test="ename != null">
+                ename,
+            </if>
+            <if test="url != null">
+                url,
+            </if>
+            <if test="description != null">
+                description,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="appid != null">
+                appid,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="name != null">
+                #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="ename != null">
+                #{ename,jdbcType=VARCHAR},
+            </if>
+            <if test="url != null">
+                #{url,jdbcType=VARCHAR},
+            </if>
+            <if test="description != null">
+                #{description,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="appid != null">
+                #{appid,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+
+    <!--批量新增所有列，列表长度不能为0，且列表id统一为null或者统一不为null-->
+    <insert id="insertBatch" keyProperty="" useGeneratedKeys="true" parameterType="list">
+        insert into db_button
+        (id, name, ename, url, description, create_time, appid)
+        values
+        <foreach item="item" collection="list" separator="," open="" close="" index="index">
+            (#{item.id,jdbcType=INTEGER}, #{item.name,jdbcType=VARCHAR}, #{item.ename,jdbcType=VARCHAR},
+            #{item.url,jdbcType=VARCHAR}, #{item.description,jdbcType=VARCHAR}, #{item.createTime,jdbcType=TIMESTAMP},
+            #{item.appid,jdbcType=INTEGER})
+        </foreach>
+    </insert>
+
+    <!--通过主键修改实体属性不为null的列-->
+    <update id="update" parameterType="com.umpay.rms.gpd.user.api.entity.DbButton">
+        update db_button
+        <set>
+            <if test="id != null">
+                id = #{id,jdbcType=INTEGER},
+            </if>
+            <if test="name != null and name != ''">
+                name = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="ename != null and ename != ''">
+                ename = #{ename,jdbcType=VARCHAR},
+            </if>
+            <if test="url != null and url != ''">
+                url = #{url,jdbcType=VARCHAR},
+            </if>
+            <if test="description != null and description != ''">
+                description = #{description,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="appid != null">
+                appid = #{appid,jdbcType=INTEGER},
+            </if>
+        </set>
+        where = #{,jdbcType=}
+    </update>
+
+    <!--通过表字段修改实体属性不为null的列-->
+    <update id="updateByField">
+        update db_button
+        <set>
+            <if test="where.id == null and set.id != null">
+                id = #{set.id,jdbcType=INTEGER},
+            </if>
+            <if test="where.name == null and set.name != null and set.name != ''">
+                name = #{set.name,jdbcType=VARCHAR},
+            </if>
+            <if test="where.ename == null and set.ename != null and set.ename != ''">
+                ename = #{set.ename,jdbcType=VARCHAR},
+            </if>
+            <if test="where.url == null and set.url != null and set.url != ''">
+                url = #{set.url,jdbcType=VARCHAR},
+            </if>
+            <if test="where.description == null and set.description != null and set.description != ''">
+                description = #{set.description,jdbcType=VARCHAR},
+            </if>
+            <if test="where.createTime == null and set.createTime != null">
+                create_time = #{set.createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="where.appid == null and set.appid != null">
+                appid = #{set.appid,jdbcType=INTEGER},
+            </if>
+        </set>
+        <where>
+            <if test="where.id != null">
+                and id = #{where.id,jdbcType=INTEGER}
+            </if>
+            <if test="where.name != null">
+                and name = #{where.name,jdbcType=VARCHAR}
+            </if>
+            <if test="where.ename != null">
+                and ename = #{where.ename,jdbcType=VARCHAR}
+            </if>
+            <if test="where.url != null">
+                and url = #{where.url,jdbcType=VARCHAR}
+            </if>
+            <if test="where.description != null">
+                and description = #{where.description,jdbcType=VARCHAR}
+            </if>
+            <if test="where.createTime != null">
+                and create_time = #{where.createTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="where.appid != null">
+                and appid = #{where.appid,jdbcType=INTEGER}
+            </if>
+        </where>
+    </update>
+
+    <!--通过主键修改实体列表，列表长度不能为0，注意：当实体属性为null时，对应的列也会别更新为null-->
+    <update id="updateBatch" parameterType="list">
+        update db_button
+        <trim prefix="set" suffixOverrides=",">
+            <trim prefix="id = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when = #{item.} then #{item.id}
+                </foreach>
+            </trim>
+            <trim prefix="name = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when = #{item.} then #{item.name}
+                </foreach>
+            </trim>
+            <trim prefix="ename = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when = #{item.} then #{item.ename}
+                </foreach>
+            </trim>
+            <trim prefix="url = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when = #{item.} then #{item.url}
+                </foreach>
+            </trim>
+            <trim prefix="description = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when = #{item.} then #{item.description}
+                </foreach>
+            </trim>
+            <trim prefix="create_time = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when = #{item.} then #{item.createTime}
+                </foreach>
+            </trim>
+            <trim prefix="appid = case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when = #{item.} then #{item.appid}
+                </foreach>
+            </trim>
+        </trim>
+        where in
+        <foreach collection="list" index="index" item="item" separator="," open="(" close=")">
+            #{item.,jdbcType=}
+        </foreach>
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from db_button where id = #{ id}
+    </delete>
+
+    <!--通过实体非空属性删除-->
+    <delete id="deleteByEntity" parameterType="com.umpay.rms.gpd.user.api.entity.DbButton">
+        delete from db_button
+        <where>
+            <if test="id != null">
+                and id = #{id,jdbcType=INTEGER}
+            </if>
+            <if test="name != null">
+                and name = #{name,jdbcType=VARCHAR}
+            </if>
+            <if test="ename != null">
+                and ename = #{ename,jdbcType=VARCHAR}
+            </if>
+            <if test="url != null">
+                and url = #{url,jdbcType=VARCHAR}
+            </if>
+            <if test="description != null">
+                and description = #{description,jdbcType=VARCHAR}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="appid != null">
+                and appid = #{appid,jdbcType=INTEGER}
+            </if>
+        </where>
+    </delete>
+
+    <!--通过主键列表删除，列表长度不能为0-->
+    <delete id="deleteByIds" parameterType="list">
+        delete from db_button where in
+        <foreach item="item" collection="list" separator="," open="(" close=")" index="index">
+            #{item}
+        </foreach>
+    </delete>
+
+    <select id="countAll" resultType="int">
+        select count() from db_button
+    </select>
+
+    <select id="countByEntity" parameterType="com.umpay.rms.gpd.user.api.entity.DbButton" resultType="int">
+        select count() from db_button
+        <where>
+            <if test="id != null">
+                and id = #{id,jdbcType=INTEGER}
+            </if>
+            <if test="name != null">
+                and name = #{name,jdbcType=VARCHAR}
+            </if>
+            <if test="ename != null">
+                and ename = #{ename,jdbcType=VARCHAR}
+            </if>
+            <if test="url != null">
+                and url = #{url,jdbcType=VARCHAR}
+            </if>
+            <if test="description != null">
+                and description = #{description,jdbcType=VARCHAR}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="appid != null">
+                and appid = #{appid,jdbcType=INTEGER}
+            </if>
+        </where>
+    </select>
+    <select id="selectButtonByUserId" resultType="java.lang.String" parameterType="java.lang.Integer">
+         select db.ename
+         from db_user a
+         inner join db_user_role b on b.userId = a.id
+         inner join db_role_permission drp on b.roleId = drp.roleId
+         inner join db_permission_button dpb on drp.permissionId =dpb.permission_id
+         inner join db_button db on db.id = dpb.button_id where a.id = #{id}
+    </select>
+</mapper>

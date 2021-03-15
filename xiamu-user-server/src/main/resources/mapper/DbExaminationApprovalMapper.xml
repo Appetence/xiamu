@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.umpay.rms.gpd.user.mapper.DbExaminationApprovalMapper">
+
+    <resultMap type="com.umpay.rms.gpd.user.api.entity.DbExaminationApproval" id="DbExaminationApprovalMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="applicantId" column="acct_id"/>
+        <result property="approverId" column="approver_id"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="status" column="status" jdbcType="INTEGER"/>
+        <result property="result" column="result" jdbcType="INTEGER"/>
+        <result property="content" column="content" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="DbExaminationApprovalMap">
+        select
+          id, acct_id, approver_id, create_time, status, result, content
+        from db_examination_approval
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="DbExaminationApprovalMap">
+        select
+          id, acct_id, approver_id, create_time, status, result, content
+        from db_examination_approval
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="DbExaminationApprovalMap">
+        select
+          id, acct_id, approver_id, create_time, status, result, content
+        from db_examination_approval
+        <where>
+            <if test="id != null and id >0">
+                and id = #{id}
+            </if>
+            <if test="applicantId != null">
+                and acct_id = #{applicantId}
+            </if>
+            <if test="approverId != null and approverId >0">
+                and approver_id = #{approverId}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="status != null and status >0">
+                and status = #{status}
+            </if>
+            <if test="result != null and result >0">
+                and result = #{result}
+            </if>
+            <if test="content != null and content != ''">
+                and content = #{content}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into db_examination_approval
+        (<if test="applicantId != null">acct_id , </if><if test="approverId != null">approver_id , </if><if test="result != null">result , </if><if test="content != null and content != ''">content, </if><if test="status != null">status  </if>)
+        values
+        ( <if test="applicantId != null">#{applicantId} ,</if>  <if test="approverId != null">#{approverId} ,</if>  <if test="createTime != null">#{createTime} ,</if>  <if test="result != null">#{result} ,</if>  <if test="content != null and content != ''">#{content}, </if>  <if test="status != null">#{status} </if> )
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update db_examination_approval
+        <set>
+            <if test="applicantId != null">
+                acct_id = #{applicantId},
+            </if>
+            <if test="approverId != null">
+                approver_id = #{approverId},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+            <if test="result != null">
+                result = #{result},
+            </if>
+            <if test="content != null and content != ''">
+                content = #{content},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from db_examination_approval where id = #{id}
+    </delete>
+
+</mapper>

@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.umpay.rms.gpd.user.mapper.AccountSMSBalanceMapper">
+
+    <resultMap type="com.umpay.rms.gpd.user.api.entity.TbAccountBalance" id="TbAccountBalanceMap">
+        <result property="id" column="id"/>
+        <result property="acctId" column="acc_id"/>
+        <result property="balance" column="balance"/>
+        <result property="status" column="status"/>
+        <result property="busi" column="busi"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="sumBalance" column="sum_balance"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="TbAccountBalanceMap">
+        select
+          id, acc_id, balance, status, create_time, busi,sum_balance
+        from tb_account_sms_balance
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="TbAccountBalanceMap">
+        select
+          id, acc_id, balance, status, create_time, sum_balance, busi
+        from tb_account_sms_balance
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="TbAccountBalanceMap">
+        select
+        id, acc_id, balance, status, create_time, sum_balance, busi
+        from tb_account_sms_balance
+        <where>
+            <if test="id != null and id >0">
+                and id = #{id}
+            </if>
+            <if test="acctId != null and acctId != ''">
+                and acc_id = #{acctId}
+            </if>
+            <if test="balance != null">
+                and balance = #{balance}
+            </if>
+            <if test="status != null and status >0">
+                and status = #{status}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="sumBalance != null and sumBalance >0">
+                and sum_balance = #{sumBalance}
+            </if>
+            <if test="busi != null and busi >0">
+                and busi = #{busi}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into tb_account_sms_balance
+        (
+        <if test="acctId != null and acctId != ''">acc_id ,</if>
+        <if test="balance != null">balance ,</if>
+        <if test="status != null">status ,</if>
+        <if test="createTime != null">create_time ,</if>
+        <if test="sumBalance != null">sum_balance,</if>
+        <if test="busi != null">busi</if>
+        )
+        values
+        (
+        <if test="acctId != null and acctId != ''">#{acctId} ,</if>
+        <if test="balance != null">#{balance} ,</if>
+        <if test="status != null">#{status} ,</if>
+        <if test="createTime != null">#{createTime} ,</if>
+        <if test="sumBalance != null">#{sumBalance},</if>
+        <if test="busi != null">#{busi}</if>
+        )
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update tb_account_sms_balance
+        <set>
+            <if test="acctId != null and acctId != ''">
+                acc_id = #{acctId},
+            </if>
+            <if test="balance != null">
+                balance = #{balance},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="sumBalance != null">
+                sum_balance = #{sum_balance} ,
+            </if>
+            <if test="busi != null">
+                busi = #{busi} ,
+            </if>
+        </set>
+        where id = #{id}
+        and balance >= 0
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from tb_account_sms_balance where id = #{id}
+    </delete>
+
+    <select id="countBalanceBySunAccount" resultType="java.lang.Long">
+    select IFNULL(sum(tab.balance),0)
+        from tb_account b
+         left join tb_account_sms_balance tab on b.account_id = tab.acc_id
+         where b.parent_account_id =  #{acctId}
+    </select>
+    <!--代理商总余额-->
+    <select id="countDelegateAccountSumBalance" resultType="java.lang.Long">
+    select IFNULL(sum(tab.balance),0)
+        from tb_account b
+         left join tb_account_sms_balance tab on b.account_id = tab.acc_id
+         left join db_user c on b.mobile = c.username
+         left join db_user_role d on c.id = d.userId
+         where b.parent_account_id =  #{acctId} and d.roleId =38
+    </select>
+    <!--代理商周总充值-->
+    <select id="countDelegateAccountWeekRechange" resultType="java.lang.Long">
+SELECT
+	IFNULL( sum( a.number ), 0 )
+FROM
+	tb_account_record a
+	LEFT JOIN tb_account b ON a.acc_id = b.account_id
+	LEFT JOIN db_user c ON b.mobile = c.username
+	LEFT JOIN db_user_role d ON c.id = d.userId
+         where b.parent_account_id =  #{acctId} and d.roleId =38 and a.flag =1 and a.status =1
+          and YEARWEEK(date_format(a.create_time,'%Y-%m-%d')) = YEARWEEK(now())
+    </select>
+    <select id="countSendNumberBySunAccount" parameterType="com.umpay.rms.gpd.user.api.entity.TbAccountBalance"
+            resultType="java.lang.Long">
+       select ifnull(count(d.status),0)
+from   tb_account b
+           left join tb_ec_mms_msg c on c.acct_id = b.account_id
+           left join tbl_mt_bill d on d.msgid = c.id
+        where b.parent_account_id = #{acctId} and c.send_status = 2   and c.del_flag = 0 and  d.deliverd = 1  and YEARWEEK(date_format(c.create_time,'%Y-%m-%d')) = YEARWEEK(now());
+    </select>
+    <update id="batchUpdateAccount" parameterType="java.util.Vector">
+        <foreach collection="list" item="item" index="index" separator=";">
+            update tb_account_sms_balance set balance = #{item.balance},sum_balance = #{item.sumBalance} where acc_id=#{item.acctId}
+        </foreach>
+    </update>
+
+
+</mapper>
