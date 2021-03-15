@@ -1,0 +1,29 @@
+spring:
+  profiles:
+    active: dev
+  application:
+    name: comp-rabbit-server
+#mq的连接信息,可直接多host连接和单host连接
+  rabbit:
+    address: 127.0.0.1:5672
+    virtualHost: /
+    username: guest
+    password: guest
+    exchange:
+      name: mq.direct
+  #创建queue的数量
+    size: 2
+  #消费者数量
+    concurrent:
+      consumers: 100
+  #每个消费者获取的最大的消息投递数量
+    prefetch:
+      count: 1
+    #mq api查询地址
+    queues:
+      url: http://localhost:15672/api/queues
+server:
+  port: 9999
+  servlet:
+    context-path: /
+
